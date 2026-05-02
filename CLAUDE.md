@@ -156,7 +156,7 @@ El desarrollador está aprendiendo activamente. Estas reglas son prioritarias en
 
 Los planes detallados con código, tests y comandos están en:
 
-- [Plan 1 — Infraestructura](docs/superpowers/plans/2026-04-30-agenturn-plan-1-infrastructure.md) — Monorepo, NeonDB, modelos, scheduling engine
+- [Plan 1 — Infraestructura](docs/superpowers/plans/2026-04-30-agenturn-plan-1-infrastructure.md) — Monorepo, NeonDB, modelos, scheduling engine ✅ completado
 - [Plan 2 — Bot service](docs/superpowers/plans/2026-04-30-agenturn-plan-2-bot.md) — Express, webhook Meta, máquina de estados
 - [Plan 3 — Dashboard](docs/superpowers/plans/2026-04-30-agenturn-plan-3-dashboard.md) — Next.js, NextAuth, pantallas, PWA
 
