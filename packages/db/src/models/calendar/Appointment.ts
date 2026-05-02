@@ -7,7 +7,7 @@ interface AppointmentAttributes {
   professional_id: string;
   service_id: string;
   client_id: string;
-  dateTime: string;
+  datetime: Date;
   status: "pending" | "confirmed" | "cancelled";
 }
 
@@ -20,7 +20,7 @@ export class Appointment extends Model<
   declare professional_id: string;
   declare service_id: string;
   declare client_id: string;
-  declare dateTime: string;
+  declare datetime: string;
   declare status: "pending" | "confirmed" | "cancelled";
 }
 
@@ -31,7 +31,7 @@ Appointment.init(
     professional_id: { type: DataTypes.UUID },
     service_id: { type: DataTypes.UUID },
     client_id: { type: DataTypes.UUID },
-    dateTime: { type: DataTypes.DATE },
+    datetime: { type: DataTypes.DATE },
     status: { type: DataTypes.ENUM("pending", "confirmed", "cancelled") },
   },
   { sequelize, tableName: "appointments" },
