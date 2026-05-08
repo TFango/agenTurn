@@ -11,7 +11,10 @@ interface TenantAttributes {
   created_at: Date;
 }
 
-export class Tenant extends Model<TenantAttributes, TenantAttributes> {
+export class Tenant extends Model<
+  TenantAttributes,
+  Omit<TenantAttributes, "id" | "created_at">
+> {
   declare id: string;
   declare name: string;
   declare whatsapp_number: string;

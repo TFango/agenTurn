@@ -13,7 +13,10 @@ interface UserAttributes {
   created_at: Date;
 }
 
-export class User extends Model<UserAttributes, UserAttributes> {
+export class User extends Model<
+  UserAttributes,
+  Omit<UserAttributes, "id" | "created_at">
+> {
   declare id: string;
   declare tenant_id: string;
   declare professional_id: string | null;

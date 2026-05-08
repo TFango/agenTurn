@@ -10,7 +10,7 @@ interface ServiceAttributes {
   active: boolean;
 }
 
-export class Service extends Model<ServiceAttributes, ServiceAttributes> {
+export class Service extends Model<ServiceAttributes, Omit<ServiceAttributes, "id">> {
   declare id: string;
   declare tenant_id: string;
   declare name: string;
