@@ -3,7 +3,7 @@
 .page {
   min-height: 100vh;
   background: var(--cream);
-  padding-bottom: calc(68px + 24px);
+  padding-bottom: calc(68px + 32px);
 }
 
 /* Top bar */
@@ -11,7 +11,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 52px 20px 12px;
+  padding: 52px 20px 16px;
 }
 
 .backBtn {
@@ -26,6 +26,11 @@
   color: var(--ink-2);
   cursor: pointer;
   flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+.backBtn:hover {
+  background: var(--cream-2);
 }
 
 .topLabel {
@@ -40,29 +45,31 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  padding: 16px 20px 24px;
+  gap: 6px;
+  padding: 4px 20px 24px;
+  position: relative;
 }
 
-.avatar {
-  width: 80px;
-  height: 80px;
+.profile::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 2px;
+  background: var(--terra-soft);
   border-radius: var(--r-full);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-serif);
-  font-size: 32px;
-  font-weight: 400;
-  color: var(--paper);
 }
 
 .name {
   font-family: var(--font-serif);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 400;
   color: var(--ink);
-  line-height: 1.2;
+  line-height: 1.15;
+  text-align: center;
+  letter-spacing: -0.01em;
 }
 
 .phone {
@@ -71,6 +78,10 @@
   gap: 6px;
   font-size: 13px;
   color: var(--ink-3);
+  background: var(--cream-2);
+  padding: 5px 12px;
+  border-radius: var(--r-full);
+  margin-top: 4px;
 }
 
 .waIcon {
@@ -80,38 +91,46 @@
 /* Stats */
 .stats {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 10px;
-  padding: 0 16px 20px;
+  padding: 24px 16px 24px;
 }
 
 .statCard {
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
-  padding: 14px 12px;
+  padding: 18px 14px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--line);
 }
 
 .statNumber {
   font-family: var(--font-mono);
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 700;
   color: var(--ink);
   line-height: 1;
 }
 
-.statGastado {
-  color: var(--sand);
-}
-
 .statLabel {
   font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   color: var(--ink-4);
 }
 
@@ -119,12 +138,12 @@
 .divider {
   height: 1px;
   background: var(--line);
-  margin: 0 16px 20px;
+  margin: 0 16px 24px;
 }
 
 /* Sections */
 .section {
-  padding: 0 16px 24px;
+  padding: 0 16px 28px;
 }
 
 .sectionLabel {
@@ -138,53 +157,76 @@
 /* Notas */
 .notasInput {
   width: 100%;
-  background: var(--paper);
-  border: 1px solid var(--line);
+  background: var(--cream-2);
+  border: 1px solid transparent;
   border-radius: var(--r-lg);
   padding: 14px;
   font-family: var(--font-sans);
   font-size: 14px;
   color: var(--ink);
   line-height: 1.6;
-  resize: vertical;
+  resize: none;
   outline: none;
-  min-height: 90px;
+  min-height: 96px;
+  box-sizing: border-box;
+  transition: border-color 0.15s, background 0.15s;
 }
 
 .notasInput::placeholder {
   color: var(--ink-4);
+  font-style: italic;
 }
 
 .notasInput:focus {
-  border-color: var(--line-2);
+  background: var(--paper);
+  border-color: var(--line);
 }
 
-/* Historial */
+/* Historial — timeline */
 .historial {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  position: relative;
+}
+
+.historial::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--line);
 }
 
 .historialRow {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 16px;
+  padding-bottom: 20px;
+  position: relative;
+}
+
+.historialRow:last-child {
+  padding-bottom: 0;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 15px;
+  height: 15px;
   border-radius: var(--r-full);
   flex-shrink: 0;
-  margin-top: 5px;
+  margin-top: 2px;
+  border: 2px solid var(--cream);
+  position: relative;
+  z-index: 1;
 }
 
 .historialInfo {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .historialServicio {
@@ -201,11 +243,11 @@
 
 /* Badge cancelado */
 .canceladoBadge {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 500;
   color: var(--rose);
   background: var(--rose-soft);
-  padding: 4px 12px;
+  padding: 3px 10px;
   border-radius: var(--r-full);
   flex-shrink: 0;
   align-self: center;
