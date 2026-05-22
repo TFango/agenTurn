@@ -163,6 +163,97 @@
   left: 3px;
 }
 
+/* Modal */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  bottom: 68px;
+  background: rgba(42, 39, 34, 0.4);
+  z-index: 99;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal {
+  width: 100%;
+  background: var(--paper);
+  border-radius: var(--r-2xl) var(--r-2xl) 0 0;
+  padding: 28px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: var(--shadow-lg);
+}
+
+.modalTitle {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.formGroup label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.formGroup input {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: var(--font-sans);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.formGroup input:focus {
+  border-color: var(--terra);
+}
+
+.modalActions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btnPrimary {
+  width: 100%;
+  padding: 14px;
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  border-radius: var(--r-full);
+  font-size: 15px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.btnSecondary {
+  width: 100%;
+  padding: 14px;
+  background: transparent;
+  color: var(--ink-3);
+  border: none;
+  border-radius: var(--r-full);
+  font-size: 15px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
 /* FAB */
 .fab {
   position: fixed;
