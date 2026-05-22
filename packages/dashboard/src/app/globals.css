@@ -1,27 +1,86 @@
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
 
+/* agenTurn — design tokens · Editorial Light */
 :root {
-  --bg: #0f0f19;
-  --surface: rgba(255,255,255,0.04);
-  --border: rgba(255,255,255,0.08);
-  --text: #e2e8f0;
-  --text-muted: rgba(255,255,255,0.4);
-  --primary: #6366f1;
-  --primary-light: rgba(99,102,241,0.15);
-  --green: #10b981;
-  --orange: #f59e0b;
-  --red: #ef4444;
-  --radius: 8px;
+  /* Surfaces */
+  --cream: #fbf8f3;
+  --cream-2: #f5efe2;
+  --paper: #ffffff;
+  --line: #e8dfca;
+  --line-2: #d8cfb8;
+
+  /* Ink (text) */
+  --ink: #2a2722;
+  --ink-2: #5c574e;
+  --ink-3: #8a8270;
+  --ink-4: #b8af9b;
+
+  /* Accents */
+  --terra: #c45c34; /* primario acento */
+  --terra-soft: #f5e2d8;
+  --sage: #7a8961; /* success */
+  --sage-soft: #e8eee0;
+  --plum: #8a5879;
+  --plum-soft: #ece1ea;
+  --sand: #c9a766;
+  --sand-soft: #f3ead8;
+  --sky: #6f95a3;
+  --sky-soft: #dee9ec;
+  --rose: #b8625e; /* danger */
+  --rose-soft: #f5dfde;
+
+  /* Type */
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-sans: "DM Sans", -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 14px;
+  --r-2xl: 18px;
+  --r-full: 999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(42, 39, 34, 0.06);
+  --shadow-md: 0 8px 24px rgba(42, 39, 34, 0.1);
+  --shadow-lg: 0 25px 80px rgba(42, 39, 34, 0.2);
 }
 
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
-button { cursor: pointer; border: none; font-family: inherit; font-size: inherit; }
-input, select, textarea { font-family: inherit; font-size: inherit; }
-a { color: inherit; text-decoration: none; }
+/* paper grain texture (opcional) */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(
+    rgba(42, 39, 34, 0.025) 1px,
+    transparent 1px
+  );
+  background-size: 4px 4px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 400;
+}
+.mono {
+  font-family: var(--font-mono);
+}

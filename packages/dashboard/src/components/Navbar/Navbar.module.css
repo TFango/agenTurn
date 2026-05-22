@@ -1,0 +1,51 @@
+/* ── Bottom Navbar ── mobile first ─────────────────────── */
+
+.navbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 68px;
+  background: var(--paper);
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px env(safe-area-inset-bottom);
+  z-index: 100;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: var(--r-md);
+  color: var(--ink-4);
+  transition: color 0.15s;
+  text-decoration: none;
+  min-width: 56px;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.active {
+  color: var(--ink);
+  border-top: 2px solid var(--terra);
+  margin-top: -1px;
+}
+
+.active .label {
+  font-weight: 700;
+}

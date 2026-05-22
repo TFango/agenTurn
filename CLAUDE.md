@@ -42,7 +42,7 @@ Ambos servicios comparten una sola base de datos en **NeonDB (Postgres serverles
 | ORM | Sequelize |
 | Base de datos | NeonDB (Postgres) |
 | Auth | NextAuth v5 — credenciales email/password |
-| PWA | next-pwa |
+| PWA | Serwist (`@serwist/next`) |
 | Tests | Vitest |
 | Deploy dashboard | Vercel |
 | Deploy bot | Railway |
@@ -145,7 +145,7 @@ El desarrollador está aprendiendo activamente. Estas reglas son prioritarias en
 - Si hay un error grave (seguridad, bug crítico, lógica rota), corregirlo directamente sin esperar
 
 **Librerías externas:**
-- Para librerías que el desarrollador probablemente no conoce (Meta Cloud API, sequelize, NextAuth, next-pwa, Vitest, etc.), dar más contexto: qué hace, cómo funciona, conceptos clave antes de pedir que lo implemente
+- Para librerías que el desarrollador probablemente no conoce (Meta Cloud API, sequelize, NextAuth, Serwist, Vitest, etc.), dar más contexto: qué hace, cómo funciona, conceptos clave antes de pedir que lo implemente
 
 **CSS:**
 - El CSS no es prioridad de aprendizaje — se puede ayudar más directamente con estilos sin restringir el código

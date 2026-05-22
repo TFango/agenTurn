@@ -1,7 +1,7 @@
 import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
-import Sidebar from '@/components/sidebar/Sidebar';
+import Navbar from '@/components/Navbar/Navbar';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();
@@ -9,10 +9,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <SessionProvider session={session}>
-      <div style={{ display: 'flex', minHeight: '100vh' }}>
-        <Sidebar />
-        <main style={{ flex: 1, padding: '24px' }}>{children}</main>
-      </div>
+      <main>{children}</main>
+      <Navbar />
     </SessionProvider>
   );
 }

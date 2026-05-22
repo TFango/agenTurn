@@ -19,7 +19,7 @@ export class WaitList extends Model<WaitlistAttributes, WaitlistAttributes> {
 
 WaitList.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID },
     client_id: { type: DataTypes.UUID },
     service_id: { type: DataTypes.UUID },

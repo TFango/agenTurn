@@ -1,11 +1,12 @@
 import dotenv from 'dotenv'
-dotenv.config()
+import path from 'path'
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') })
 
 import { sequelize } from './connection'
 import './models/associations'
 
 async function main() {
-  await sequelize.sync({ alter: true })
+  await sequelize.sync({ force: true })
   console.log('Tablas creadas correctamente')
   await sequelize.close()
 }

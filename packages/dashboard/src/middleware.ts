@@ -1,9 +1,11 @@
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
 import { NextResponse } from "next/server";
 
-// El middleware se ejecuta en cada request antes de que llegue a la página.
-// Acá lo "envolvemos" con auth() de NextAuth, que nos da acceso a req.auth
-// (los datos de la sesión actual, si existe).
+// En el middleware usamos NextAuth solo con la config mínima (sin providers ni DB)
+// porque el middleware corre en Edge Runtime y no puede usar Sequelize/Node.js.
+// Solo necesitamos leer el JWT para saber si hay sesión — no necesitamos la DB.
+const { auth } = NextAuth({ providers: [], session: { strategy: "jwt" } });
+
 export default auth((req) => {
   // !! convierte el valor a booleano. Si req.auth existe → true, si es null → false.
   const isLoggedIn = !!req.auth;

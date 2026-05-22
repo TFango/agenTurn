@@ -21,7 +21,7 @@ export class Service extends Model<ServiceAttributes, Omit<ServiceAttributes, "i
 
 Service.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID },
     name: { type: DataTypes.STRING },
     duration_minutes: { type: DataTypes.INTEGER },

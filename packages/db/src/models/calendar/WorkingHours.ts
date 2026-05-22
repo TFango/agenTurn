@@ -22,7 +22,7 @@ export class WorkingHours extends Model<
 
 WorkingHours.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     professional_id: { type: DataTypes.UUID },
     day_of_week: { type: DataTypes.INTEGER },
     start_time: { type: DataTypes.TIME },

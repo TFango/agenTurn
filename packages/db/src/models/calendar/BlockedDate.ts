@@ -20,7 +20,7 @@ export class BlockedDate extends Model<
 
 BlockedDate.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     professional_id: { type: DataTypes.UUID },
     date: { type: DataTypes.DATE },
     reason: { type: DataTypes.STRING },

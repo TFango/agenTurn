@@ -21,7 +21,7 @@ export class Client extends Model<ClientAtributtes, ClientAtributtes> {
 
 Client.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID },
     name: { type: DataTypes.STRING },
     whatsapp_number: { type: DataTypes.STRING },

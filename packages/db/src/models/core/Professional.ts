@@ -20,7 +20,7 @@ export class Professional extends Model<
 
 Professional.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID, allowNull: false },
     name: { type: DataTypes.STRING },
     active: { type: DataTypes.BOOLEAN },

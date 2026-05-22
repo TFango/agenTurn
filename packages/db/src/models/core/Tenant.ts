@@ -26,7 +26,7 @@ export class Tenant extends Model<
 
 Tenant.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     name: { type: DataTypes.STRING },
     whatsapp_number: { type: DataTypes.STRING },
     plan: { type: DataTypes.ENUM("free", "pro"), allowNull: false },

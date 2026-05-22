@@ -1,0 +1,183 @@
+/* ── Servicios Page ── */
+
+.page {
+  min-height: 100vh;
+  background: var(--cream);
+  padding-bottom: calc(68px + 24px); /* navbar height + breathing room */
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 52px 20px 16px;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.headerCount {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+}
+
+.headerTitle {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.iconBtn {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--r-full);
+  background: var(--terra-soft);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--terra);
+  cursor: pointer;
+}
+
+.notifDot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-full);
+  background: var(--rose);
+  border: 1.5px solid var(--cream);
+}
+
+/* List */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 8px 16px 0;
+}
+
+/* Card */
+.card {
+  background: var(--paper);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  overflow: hidden;
+}
+
+.colorBar {
+  width: 4px;
+  align-self: stretch;
+  flex-shrink: 0;
+  border-radius: var(--r-xl) 0 0 var(--r-xl);
+}
+
+.cardBody {
+  flex: 1;
+  padding: 14px 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.serviceName {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.serviceMeta {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--ink-3);
+}
+
+.clockIcon {
+  flex-shrink: 0;
+  margin-right: 2px;
+}
+
+/* Toggle */
+.toggle {
+  flex-shrink: 0;
+  margin-right: 16px;
+  width: 46px;
+  height: 26px;
+  border-radius: var(--r-full);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  padding: 0;
+}
+
+.toggleOn {
+  background: var(--ink);
+}
+
+.toggleOff {
+  background: var(--line-2);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  transition: left 0.2s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggleOn .toggleThumb {
+  left: calc(100% - 23px);
+}
+
+.toggleOff .toggleThumb {
+  left: 3px;
+}
+
+/* FAB */
+.fab {
+  position: fixed;
+  bottom: calc(68px + 16px);
+  right: 20px;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--r-full);
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  z-index: 50;
+}

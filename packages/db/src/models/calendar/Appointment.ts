@@ -26,7 +26,7 @@ export class Appointment extends Model<
 
 Appointment.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID },
     professional_id: { type: DataTypes.UUID },
     service_id: { type: DataTypes.UUID },
