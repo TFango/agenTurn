@@ -1,13 +1,16 @@
 'use client';
 
+import React from 'react';
 import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 import styles from './configuracion.module.css';
 
-const OPCIONES = [
+const OPCIONES: { id: string; label: string; sub: string; subColor?: string; href?: string; icon: React.ReactNode }[] = [
   {
     id: 'horarios',
     label: 'Horarios de atención',
     sub: '6 días activos',
+    href: '/dashboard/configuracion/horarios',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <circle cx="12" cy="12" r="10" />
@@ -102,18 +105,24 @@ export default function ConfiguracionPage() {
 
         {/* Opciones */}
         <div className={styles.optionsCard}>
-          {OPCIONES.map((op, i) => (
-            <button key={op.id} className={`${styles.optionRow} ${i < OPCIONES.length - 1 ? styles.optionBorder : ''}`}>
-              <span className={styles.optionIcon}>{op.icon}</span>
-              <div className={styles.optionText}>
-                <p className={styles.optionLabel}>{op.label}</p>
-                <p className={styles.optionSub} style={op.subColor ? { color: op.subColor } : undefined}>
-                  {op.sub}
-                </p>
-              </div>
-              <span className={styles.chevron}><ChevronRight /></span>
-            </button>
-          ))}
+          {OPCIONES.map((op, i) => {
+            const inner = (
+              <>
+                <span className={styles.optionIcon}>{op.icon}</span>
+                <div className={styles.optionText}>
+                  <p className={styles.optionLabel}>{op.label}</p>
+                  <p className={styles.optionSub} style={op.subColor ? { color: op.subColor } : undefined}>
+                    {op.sub}
+                  </p>
+                </div>
+                <span className={styles.chevron}><ChevronRight /></span>
+              </>
+            );
+
+            return op.href
+              ? <Link key={op.id} href={op.href} className={`${styles.optionRow} ${i < OPCIONES.length - 1 ? styles.optionBorder : ''}`}>{inner}</Link>
+              : <button key={op.id} className={`${styles.optionRow} ${i < OPCIONES.length - 1 ? styles.optionBorder : ''}`}>{inner}</button>;
+          })}
         </div>
 
         {/* Cerrar sesión */}
