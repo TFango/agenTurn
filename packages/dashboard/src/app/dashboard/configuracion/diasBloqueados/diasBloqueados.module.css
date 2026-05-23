@@ -1,0 +1,322 @@
+/* ── Días Bloqueados Page ── */
+
+.page {
+  min-height: 100vh;
+  background: var(--cream);
+  padding-bottom: calc(68px + 32px);
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 52px 20px 20px;
+}
+
+.backBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-2);
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.backBtn:hover {
+  background: var(--cream-2);
+}
+
+.headerSub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  margin-bottom: 2px;
+}
+
+.headerTitle {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* ── Content ── */
+.content {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Form card ── */
+.formCard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.formTitle {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.fieldLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.optional {
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--ink-4);
+}
+
+.dateInput {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 12px 14px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.dateInput:focus {
+  border-color: var(--terra);
+  background: var(--paper);
+}
+
+.dateInputError {
+  border-color: var(--rose);
+  background: var(--rose-soft);
+}
+
+.errorMsg {
+  font-size: 12px;
+  color: var(--rose);
+  font-weight: 500;
+}
+
+.reasonInput {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--cream);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 11px 14px;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.reasonInput::placeholder {
+  color: var(--ink-4);
+}
+
+.reasonInput:focus {
+  border-color: var(--terra);
+  background: var(--paper);
+}
+
+.addBtn {
+  width: 100%;
+  padding: 14px;
+  border-radius: var(--r-2xl);
+  background: var(--rose);
+  color: white;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+  margin-top: 2px;
+}
+
+.addBtn:hover {
+  opacity: 0.9;
+}
+
+.addBtn:active {
+  transform: scale(0.98);
+}
+
+.addBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Lista ── */
+.listSection {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.listTitle {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.listCount {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--rose);
+  background: var(--rose-soft);
+  padding: 3px 9px;
+  border-radius: var(--r-full);
+}
+
+/* Empty state */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 36px 20px;
+  text-align: center;
+}
+
+.emptyIcon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-xl);
+  background: var(--cream-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-4);
+  margin-bottom: 4px;
+}
+
+.emptyText {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.emptySub {
+  font-size: 12px;
+  color: var(--ink-3);
+  max-width: 220px;
+  line-height: 1.5;
+}
+
+/* List items */
+.list {
+  list-style: none;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.15s;
+}
+
+.listItem:last-child {
+  border-bottom: none;
+}
+
+.listItem:hover {
+  background: var(--rose-soft);
+}
+
+.itemLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.itemDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--rose);
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+
+.itemDate {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  text-transform: capitalize;
+}
+
+.itemReason {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+.deleteBtn {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-full);
+  background: transparent;
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-3);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.deleteBtn:hover {
+  background: var(--rose);
+  border-color: var(--rose);
+  color: white;
+}

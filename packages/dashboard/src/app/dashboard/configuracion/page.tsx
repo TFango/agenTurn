@@ -35,6 +35,7 @@ const OPCIONES: { id: string; label: string; sub: string; subColor?: string; hre
     id: 'bloqueados',
     label: 'Días bloqueados',
     sub: '1 día',
+    href: '/dashboard/configuracion/diasBloqueados',
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
         <line x1="18" y1="6" x2="6" y2="18" />
