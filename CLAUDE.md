@@ -38,6 +38,7 @@ Ambos servicios comparten una sola base de datos en **NeonDB (Postgres serverles
 |---|---|
 | Dashboard | Next.js 16 + React 19 + TypeScript |
 | Estilos | CSS Modules (sin Tailwind) |
+| Gráficos | Recharts (instalado en `packages/dashboard`) |
 | Bot service | Node.js + TypeScript + Express |
 | ORM | Sequelize |
 | Base de datos | NeonDB (Postgres) |
@@ -108,8 +109,9 @@ Estados adicionales:
 |---|---|
 | `/dashboard` | Agenda semanal con todos los turnos |
 | `/dashboard/servicios` | CRUD de servicios |
-| `/dashboard/clientes` | Tabla de clientes + historial |
-| `/dashboard/metricas` | Stats del mes + ranking de servicios |
+| `/dashboard/clientes` | Lista de clientes — conectada a `GET /api/clients` |
+| `/dashboard/clientes/[id]` | Detalle de cliente con historial de turnos — conectada a `GET /api/clients/[id]` |
+| `/dashboard/metricas` | Stats del mes + ranking de servicios — **pendiente conectar a API** |
 | `/dashboard/configuracion` | Horarios, profesionales, días bloqueados, WhatsApp |
 
 **Roles:**
@@ -126,6 +128,23 @@ Estados adicionales:
 - Sin abstracciones especulativas (YAGNI)
 - Sin manejo de errores para escenarios imposibles
 - Validación solo en boundaries del sistema (input de usuario, webhooks externos)
+
+### Next.js 16 — breaking changes conocidos
+
+- **`params` es una Promise** en route handlers y pages dinámicas. Siempre hacer `await params` antes de destructurar:
+  ```ts
+  export async function GET(req, { params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+  }
+  ```
+
+### Seed de base de datos
+
+Existe un script en `packages/db/src/seed.ts` para poblar la DB con datos de prueba:
+```bash
+npm run seed --workspace=packages/db
+```
+Crea: tenant "Studio Salvia", profesional "Analía", servicio "Corte", cliente "Valentina Gómez", usuario admin (`admin@studiosalvia.com` / `admin123`) y un turno para hoy.
 
 ---
 
@@ -161,3 +180,11 @@ Los planes detallados con código, tests y comandos están en:
 - [Plan 3 — Dashboard](docs/superpowers/plans/2026-04-30-agenturn-plan-3-dashboard.md) — Next.js, NextAuth, pantallas, PWA
 
 El design spec completo está en [docs/superpowers/specs/2026-04-30-agenturn-design.md](docs/superpowers/specs/2026-04-30-agenturn-design.md).
+
+---
+
+## Pendientes técnicos
+
+- **Gráfico de línea en métricas** — Recharts ya está instalado. Para mostrar un sparkline real en el hero card de métricas, hay que extender `GET /api/metrics` para devolver appointments agrupados por día del mes (query con `GROUP BY DATE(datetime)`), y luego renderizarlo con `<LineChart>` de Recharts en la page.
+
+- **Horarios por profesional (post-MVP)** — La pantalla de configuración de horarios actualmente lee y escribe los `working_hours` del primer profesional del tenant, tratándolos como "horarios del local". Para multi-profesional real, cada profesional debería poder configurar sus propios horarios desde el panel.

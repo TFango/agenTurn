@@ -8,9 +8,15 @@ interface ProfessionalAttributes {
   active: boolean;
 }
 
+interface ProfessionalCreationAttributes {
+  tenant_id: string;
+  name: string;
+  active: boolean;
+}
+
 export class Professional extends Model<
   ProfessionalAttributes,
-  ProfessionalAttributes
+  ProfessionalCreationAttributes
 > {
   declare id: string;
   declare tenant_id: string;

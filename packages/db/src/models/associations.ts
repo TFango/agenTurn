@@ -50,7 +50,7 @@ Appointment.belongsTo(Service, { foreignKey: "service_id", as: "service" });
 Service.hasMany(WaitList, { foreignKey: "service_id" });
 WaitList.belongsTo(Service, { foreignKey: "service_id" });
 
-Client.hasMany(Appointment, { foreignKey: "client_id" });
+Client.hasMany(Appointment, { foreignKey: "client_id", as: "appointments" });
 Appointment.belongsTo(Client, { foreignKey: "client_id", as: "client" });
 
 Client.hasMany(WaitList, { foreignKey: "client_id" });
