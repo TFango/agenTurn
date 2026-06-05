@@ -188,3 +188,5 @@ El design spec completo está en [docs/superpowers/specs/2026-04-30-agenturn-des
 - **Gráfico de línea en métricas** — Recharts ya está instalado. Para mostrar un sparkline real en el hero card de métricas, hay que extender `GET /api/metrics` para devolver appointments agrupados por día del mes (query con `GROUP BY DATE(datetime)`), y luego renderizarlo con `<LineChart>` de Recharts en la page.
 
 - **Horarios por profesional (post-MVP)** — La pantalla de configuración de horarios actualmente lee y escribe los `working_hours` del primer profesional del tenant, tratándolos como "horarios del local". Para multi-profesional real, cada profesional debería poder configurar sus propios horarios desde el panel.
+
+- **Agregar turno manual desde la agenda** — El botón "+" en la página de agenda (`/dashboard`) debe abrir un formulario para crear un turno manualmente. Campos necesarios: profesional (selector), cliente (selector de existentes o nombre libre para nuevos), servicio (selector), fecha y hora. Pendiente definir si el cliente puede ser nombre libre o solo de la lista existente.
