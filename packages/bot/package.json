@@ -2,10 +2,23 @@
   "name": "@agenturn/bot",
   "version": "1.0.0",
   "private": true,
-  "main": "src/index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@agenturn/db": "*",
+    "express": "^4.19.0",
+    "axios": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "supertest": "^7.0.0",
+    "@types/supertest": "^6.0.2",
+    "ts-node-dev": "^2.0.0",
+    "vitest": "^1.6.0"
   }
 }
