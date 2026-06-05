@@ -1,0 +1,271 @@
+/* ── Horarios Page ── */
+
+.page {
+  min-height: 100vh;
+  background: var(--cream);
+  padding-bottom: calc(68px + 32px);
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 52px 20px 20px;
+}
+
+.backBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-2);
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.backBtn:hover {
+  background: var(--cream-2);
+}
+
+.headerSub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  margin-bottom: 2px;
+}
+
+.headerTitle {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* ── Content ── */
+.content {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Summary badge ── */
+.summaryBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  padding: 6px 14px;
+  align-self: flex-start;
+}
+
+.summaryDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--terra);
+}
+
+/* ── Days list ── */
+.daysList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+/* ── Day row ── */
+.dayRow {
+  padding: 16px 18px;
+  border-bottom: 1px solid var(--line);
+  transition: background 0.2s ease;
+}
+
+.dayRow:last-child {
+  border-bottom: none;
+}
+
+.dayRowActive {
+  background: var(--terra-soft);
+}
+
+.dayTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dayLeft {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.dayAbrev {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--terra);
+  width: 28px;
+}
+
+.dayRow:not(.dayRowActive) .dayAbrev {
+  color: var(--ink-4);
+}
+
+.dayLabel {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.dayRow:not(.dayRowActive) .dayLabel {
+  color: var(--ink-3);
+}
+
+/* ── Toggle ── */
+.toggle {
+  width: 44px;
+  height: 26px;
+  border-radius: var(--r-full);
+  background: var(--line-2);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  flex-shrink: 0;
+}
+
+.toggleOn {
+  background: var(--terra);
+}
+
+.toggleThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(42, 39, 34, 0.2);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toggleOn .toggleThumb {
+  transform: translateX(18px);
+}
+
+/* ── Time inputs ── */
+.timeRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(196, 92, 52, 0.15);
+  animation: slideDown 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.timeField {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timeLabel {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--terra);
+  text-transform: uppercase;
+}
+
+.timeInput {
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ink);
+  background: transparent;
+  border: none;
+  border-bottom: 1.5px solid rgba(196, 92, 52, 0.3);
+  padding: 4px 0;
+  outline: none;
+  transition: border-color 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.timeInput:focus {
+  border-bottom-color: var(--terra);
+}
+
+.timeSep {
+  width: 20px;
+  height: 1.5px;
+  background: rgba(196, 92, 52, 0.25);
+  flex-shrink: 0;
+  margin-top: 18px;
+}
+
+/* ── Save button ── */
+.saveBtn {
+  width: 100%;
+  padding: 16px;
+  border-radius: var(--r-2xl);
+  background: var(--ink);
+  color: var(--paper);
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition:
+    background 0.25s ease,
+    transform 0.1s ease;
+  margin-top: 4px;
+}
+
+.saveBtn:active {
+  transform: scale(0.98);
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saveBtnDone {
+  background: var(--sage);
+}

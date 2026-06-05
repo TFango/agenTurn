@@ -1,0 +1,195 @@
+/* ── Cuenta Page ── */
+
+.page {
+  min-height: 100vh;
+  background: var(--cream);
+  padding-bottom: calc(68px + 32px);
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 52px 20px 20px;
+}
+
+.backBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-full);
+  background: var(--paper);
+  border: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-2);
+  flex-shrink: 0;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+
+.backBtn:hover {
+  background: var(--cream-2);
+}
+
+.headerSub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  margin-bottom: 2px;
+}
+
+.headerTitle {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* ── Content ── */
+.content {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Section ── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sectionTitle {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--ink-4);
+  text-transform: uppercase;
+  padding-left: 4px;
+}
+
+/* ── Profile card — signature element ── */
+.profileCard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: var(--plum-soft);
+  border: 1.5px solid rgba(138, 88, 121, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 26px;
+  font-weight: 400;
+  color: var(--plum);
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.profileName {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profileEmail {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Subscription card ── */
+.card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.rowLast {
+  border-bottom: none;
+}
+
+.rowLabel {
+  font-size: 14px;
+  color: var(--ink-2);
+  font-weight: 400;
+}
+
+.rowValue {
+  font-size: 14px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+/* ── Plan badges ── */
+.badge {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: var(--r-full);
+}
+
+.badgeFree {
+  background: var(--cream-2);
+  color: var(--ink-3);
+  border: 1px solid var(--line-2);
+}
+
+.badgePro {
+  background: var(--plum-soft);
+  color: var(--plum);
+  border: 1px solid rgba(138, 88, 121, 0.2);
+}
+
+.badgeActive {
+  background: var(--sage-soft);
+  color: var(--sage);
+  border: 1px solid rgba(122, 137, 97, 0.2);
+}
+
+.badgeInactive {
+  background: var(--cream-2);
+  color: var(--ink-3);
+  border: 1px solid var(--line-2);
+}

@@ -1,0 +1,255 @@
+/* ── Configuración / Ajustes Page ── */
+
+.page {
+  min-height: 100vh;
+  background: var(--cream);
+  padding-bottom: calc(68px + 40px);
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 52px 24px 28px;
+}
+
+.headerSub {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  margin-bottom: 2px;
+}
+
+.headerTitle {
+  font-family: var(--font-serif);
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.iconBtn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-full);
+  background: transparent;
+  border: 1.5px solid var(--line-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-3);
+  cursor: pointer;
+  margin-top: 8px;
+  transition: border-color 0.15s, color 0.15s;
+  flex-shrink: 0;
+}
+
+.iconBtn:hover {
+  border-color: var(--ink-3);
+  color: var(--ink);
+}
+
+.notifDot {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--rose);
+  border: 1.5px solid var(--cream);
+}
+
+/* ── Content ── */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 20px;
+}
+
+/* ── Profile card — dark band ── */
+.profileCard {
+  width: 100%;
+  background: var(--ink);
+  border-radius: 20px;
+  padding: 22px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  margin-bottom: 8px;
+}
+
+.profileCard:hover {
+  opacity: 0.92;
+}
+
+.profileAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-full);
+  background: var(--terra);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 400;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.profileInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.profileName {
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 400;
+  color: #fff;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profileSub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+.chevron {
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Options — ficha con borde izquierdo ── */
+.optionsCard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background: transparent;
+}
+
+.optionRow {
+  width: 100%;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--line-2);
+  border-radius: 14px;
+  padding: 16px 16px 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    border-left-color 0.18s ease,
+    background 0.15s ease;
+  text-align: left;
+}
+
+.optionRow:hover {
+  background: var(--cream);
+  border-left-color: var(--terra);
+}
+
+.optionRow:hover .optionIcon {
+  background: var(--terra-soft);
+  color: var(--terra);
+}
+
+.optionRow:hover .chevron {
+  color: var(--terra);
+}
+
+.optionIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-md);
+  background: var(--cream-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-3);
+  flex-shrink: 0;
+  transition: background 0.18s, color 0.18s;
+}
+
+.optionText {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.optionLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.optionSub {
+  font-size: 11px;
+  color: var(--ink-3);
+  line-height: 1.3;
+}
+
+.optionRow .chevron {
+  color: var(--ink-4);
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: color 0.18s;
+}
+
+/* ── Sign out ── */
+.signOutBtn {
+  width: 100%;
+  background: transparent;
+  border: 1.5px dashed var(--line-2);
+  border-radius: 14px;
+  padding: 14px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink-3);
+  cursor: pointer;
+  margin-top: 10px;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+
+.signOutBtn:hover {
+  border-color: var(--rose);
+  color: var(--rose);
+  background: var(--rose-soft);
+}
+
+/* ── Version ── */
+.version {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: var(--ink-4);
+  padding: 8px 0 4px;
+}

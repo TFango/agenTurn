@@ -1,0 +1,307 @@
+/* ── Métricas Page ── */
+
+.page {
+  min-height: 100vh;
+  background: var(--cream);
+  padding-bottom: calc(68px + 32px);
+}
+
+/* ── Reveal animation ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition:
+    opacity 0.45s ease var(--delay, 0ms),
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1) var(--delay, 0ms);
+}
+
+.loaded .reveal {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── Header ── */
+.header {
+  padding: 52px 20px 20px;
+}
+
+.headerSub {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+
+.headerTitle {
+  font-family: var(--font-serif);
+  font-size: 32px;
+  font-weight: 400;
+  color: var(--ink);
+  line-height: 1;
+}
+
+/* ── Content ── */
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 16px;
+}
+
+/* ── Hero card ── */
+.heroCard {
+  background: var(--ink);
+  border-radius: 22px;
+  padding: 24px 24px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.heroInner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+
+.heroLeft {
+  flex: 1;
+}
+
+.heroEyebrow {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.38);
+  margin-bottom: 12px;
+}
+
+.heroAmount {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  line-height: 1;
+}
+
+.heroCurrency {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: rgba(255, 255, 255, 0.55);
+  margin-top: 8px;
+}
+
+.heroFigure {
+  font-family: var(--font-serif);
+  font-size: 54px;
+  font-weight: 400;
+  color: var(--paper);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+/* Decorative orb */
+.heroOrb {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--terra) 0%, var(--plum) 55%, transparent 75%);
+  opacity: 0.35;
+  flex-shrink: 0;
+  margin-top: -8px;
+  margin-right: -8px;
+}
+
+.heroDivider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 20px 0 0;
+}
+
+.heroSub {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.3);
+  padding: 12px 0 20px;
+  letter-spacing: 0.02em;
+}
+
+/* ── Stats row (3 cards horizontal) ── */
+.statsRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.statCard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.statCard::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--sand);
+  opacity: 0.4;
+  border-radius: 0 0 16px 16px;
+}
+
+.statCardRed::after {
+  background: var(--rose);
+  opacity: 0.5;
+}
+
+.statEmoji {
+  font-size: 16px;
+  line-height: 1;
+  margin-bottom: 6px;
+  display: block;
+  filter: grayscale(0.2);
+}
+
+.statValue {
+  font-family: var(--font-mono);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.statCardRed .statValue {
+  color: var(--rose);
+}
+
+.statLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+/* ── Ranking card ── */
+.rankingCard {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.rankingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.rankingTitle {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--ink);
+}
+
+.rankingBadge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--terra);
+  background: var(--terra-soft);
+  padding: 3px 8px;
+  border-radius: var(--r-full);
+}
+
+.rankingEmpty {
+  font-size: 13px;
+  color: var(--ink-3);
+  text-align: center;
+  padding: 24px 0;
+}
+
+.rankingList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rankingRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.rankingLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 130px;
+  flex-shrink: 0;
+}
+
+.rankingIndex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+  width: 22px;
+}
+
+.rankingName {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rankingRight {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.barTrack {
+  flex: 1;
+  height: 6px;
+  background: var(--cream-2);
+  border-radius: var(--r-full);
+  overflow: hidden;
+}
+
+.barFill {
+  height: 100%;
+  width: 0%;
+  border-radius: var(--r-full);
+  background: var(--bar-color, var(--terra));
+  transition: width 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--bar-delay, 0ms);
+}
+
+.barAnimate {
+  width: var(--bar-width, 0%);
+}
+
+.rankingCount {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}

@@ -37,7 +37,7 @@ export class ConversationState extends Model<
 
 ConversationState.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID },
     client_whatsapp: { type: DataTypes.STRING },
     state: {

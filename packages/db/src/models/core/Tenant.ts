@@ -11,7 +11,10 @@ interface TenantAttributes {
   created_at: Date;
 }
 
-export class Tenant extends Model<TenantAttributes, TenantAttributes> {
+export class Tenant extends Model<
+  TenantAttributes,
+  Omit<TenantAttributes, "id" | "created_at">
+> {
   declare id: string;
   declare name: string;
   declare whatsapp_number: string;
@@ -23,7 +26,7 @@ export class Tenant extends Model<TenantAttributes, TenantAttributes> {
 
 Tenant.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     name: { type: DataTypes.STRING },
     whatsapp_number: { type: DataTypes.STRING },
     plan: { type: DataTypes.ENUM("free", "pro"), allowNull: false },

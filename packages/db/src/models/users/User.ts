@@ -13,7 +13,10 @@ interface UserAttributes {
   created_at: Date;
 }
 
-export class User extends Model<UserAttributes, UserAttributes> {
+export class User extends Model<
+  UserAttributes,
+  Omit<UserAttributes, "id" | "created_at">
+> {
   declare id: string;
   declare tenant_id: string;
   declare professional_id: string | null;
@@ -27,7 +30,7 @@ export class User extends Model<UserAttributes, UserAttributes> {
 
 User.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID },
     professional_id: { type: DataTypes.UUID, allowNull: true },
     name: { type: DataTypes.STRING },

@@ -10,7 +10,7 @@ interface ServiceAttributes {
   active: boolean;
 }
 
-export class Service extends Model<ServiceAttributes, ServiceAttributes> {
+export class Service extends Model<ServiceAttributes, Omit<ServiceAttributes, "id">> {
   declare id: string;
   declare tenant_id: string;
   declare name: string;
@@ -21,7 +21,7 @@ export class Service extends Model<ServiceAttributes, ServiceAttributes> {
 
 Service.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID },
     name: { type: DataTypes.STRING },
     duration_minutes: { type: DataTypes.INTEGER },

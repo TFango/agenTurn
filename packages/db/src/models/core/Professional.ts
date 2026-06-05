@@ -8,9 +8,15 @@ interface ProfessionalAttributes {
   active: boolean;
 }
 
+interface ProfessionalCreationAttributes {
+  tenant_id: string;
+  name: string;
+  active: boolean;
+}
+
 export class Professional extends Model<
   ProfessionalAttributes,
-  ProfessionalAttributes
+  ProfessionalCreationAttributes
 > {
   declare id: string;
   declare tenant_id: string;
@@ -20,7 +26,7 @@ export class Professional extends Model<
 
 Professional.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true },
+    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     tenant_id: { type: DataTypes.UUID, allowNull: false },
     name: { type: DataTypes.STRING },
     active: { type: DataTypes.BOOLEAN },
