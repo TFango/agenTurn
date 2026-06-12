@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../../connection";
 
-type ConversationStateEnum =
+export type ConversationStateEnum =
   | "greeting"
   | "select_service"
   | "select_professional"
@@ -23,9 +23,17 @@ interface ConversationStateAttributes {
   updated_at: Date;
 }
 
+interface ConversationStateCreationAttributes {
+  tenant_id: string;
+  client_whatsapp: string;
+  state: ConversationStateEnum;
+  temp_data: Record<string, unknown>;
+  updated_at?: Date;
+}
+
 export class ConversationState extends Model<
   ConversationStateAttributes,
-  ConversationStateAttributes
+  ConversationStateCreationAttributes
 > {
   declare id: string;
   declare tenant_id: string;

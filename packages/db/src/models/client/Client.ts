@@ -10,7 +10,15 @@ interface ClientAtributtes {
   created_at: Date;
 }
 
-export class Client extends Model<ClientAtributtes, ClientAtributtes> {
+interface ClientCreationAttributes {
+  tenant_id: string;
+  name: string;
+  whatsapp_number: string;
+  notes?: string;
+  created_at?: Date;
+}
+
+export class Client extends Model<ClientAtributtes, ClientCreationAttributes> {
   declare id: string;
   declare tenant_id: string;
   declare name: string;
