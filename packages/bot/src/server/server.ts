@@ -1,5 +1,5 @@
 import express from "express";
-import router from "./webhook";
+import router from "../webhook/webhook";
 
 const app = express();
 

@@ -34,7 +34,7 @@ router.post("/", (req: Request, res: Response) => {
 });
 
 async function handleIncomingMessage(from, to, body, contactName) {
-  const { routeMessage } = await import("./router");
+  const { routeMessage } = await import("../router");
   await routeMessage(from, to, body, contactName);
 }
 
