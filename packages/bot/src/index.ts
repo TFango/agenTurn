@@ -1,6 +1,8 @@
 import app from "./server/server";
+import { startTTLCleanup } from "./ttl-cleanup";
 
-const PORT = process.env.PORT || "3000";
+const PORT = process.env.PORT || "3001";
 app.listen(PORT, () => {
-  console.log(`Servidor corriendo en ${PORT}`);
+  console.log(`Bot service running on port ${PORT}`);
+  startTTLCleanup();
 });

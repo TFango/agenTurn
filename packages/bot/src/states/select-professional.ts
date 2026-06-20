@@ -10,7 +10,7 @@ export async function handleSelectProfessional(
   tenant: TenantI,
   client: ClientI,
   body: string,
-) {
+): Promise<void> {
   const professionals = await Professional.findAll({
     where: { tenant_id: tenant.id, active: true },
   });
@@ -46,7 +46,7 @@ export async function handleSelectProfessional(
   await sendListMessage(
     tenant.whatsapp_number,
     conv.client_whatsapp,
-    "¿Que profesional desea elegir?",
+    "¿Con quién querés atenderte?",
     "Ver profesionales",
     professionals.map((p) => ({
       id: p.id,

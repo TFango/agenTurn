@@ -38,10 +38,10 @@ export async function handleConfirm(
   await sendButtonMessage(
     tenant.whatsapp_number,
     conv.client_whatsapp,
-    `Servicio: ${service_name}, Profesional: ${professional_name}, Fecha: ${selected_date}, Horario: ${selected_time}, Duracion: ${service_duration}`,
+    `*Resumen de tu turno:*\n📋 Servicio: ${service_name}\n👩 Profesional: ${professional_name}\n📅 Fecha: ${selected_date}\n⏰ Hora: ${selected_time} (${service_duration} min)\n\n¿Confirmás?`,
     [
-      { id: "confirm_yes", title: "Confirmar" },
-      { id: "confirm_change", title: "Modificar" },
+      { id: "confirm_yes", title: "✅ Sí, confirmar" },
+      { id: "confirm_change", title: "✏️ Cambiar algo" },
     ],
   );
 }

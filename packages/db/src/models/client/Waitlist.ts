@@ -9,7 +9,13 @@ interface WaitlistAttributes {
   created_at: Date;
 }
 
-export class WaitList extends Model<WaitlistAttributes, WaitlistAttributes> {
+interface WaitlistCreationAttributes {
+  tenant_id: string;
+  client_id: string;
+  service_id: string;
+}
+
+export class WaitList extends Model<WaitlistAttributes, WaitlistCreationAttributes> {
   declare id: string;
   declare tenant_id: string;
   declare client_id: string;
