@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(bash C:/Users/Ema/.claude/skills/brainstorming/scripts/start-server.sh --project-dir \"F:/Programacion/agenTurn\")"
+      "Bash(bash C:/Users/Ema/.claude/skills/brainstorming/scripts/start-server.sh --project-dir \"F:/Programacion/agenTurn\")",
+      "Bash(node -e ' *)"
     ]
   }
 }

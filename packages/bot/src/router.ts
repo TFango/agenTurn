@@ -28,8 +28,10 @@ export async function routeMessage(
     },
   });
 
-  if (
-    RESET_KEYWORDS.some((kw) => body.toLowerCase().includes(kw)) &&
+  if (body.toLowerCase().trim() === "cancelar turno") {
+    await instance.update({ state: "cancel_select" });
+  } else if (
+    RESET_KEYWORDS.some((kw) => body.toLowerCase().trim().includes(kw)) &&
     instance.state !== "greeting"
   ) {
     await instance.update({ state: "greeting", temp_data: {} });
