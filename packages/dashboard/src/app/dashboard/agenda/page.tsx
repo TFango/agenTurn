@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { FormEventHandler, useEffect, useState } from "react";
 import styles from "./agenda.module.css";
 import type { Appointment, Client, Professional, Service } from "./types";
 
@@ -44,9 +44,66 @@ export default function AgendaPage() {
   const monthDays = getMonthDays(today);
   const todayDate = today.getDate();
 
+  const [selectedProfessional, setSelectedProfessional] = useState<string>("");
+  const [selectedService, setSelectedService] = useState<string>("");
+  const [selectedClient, setSelectedClient] = useState<string>("");
+  const [selectedTime, setSelectedTime] = useState<string>("");
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [formError, setFormError] = useState<string>("");
 
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [services, setServices] = useState<Service[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+
+  async function openModal() {
+    if (professionals.length === 0) {
+      const [profs, servs, clis] = await Promise.all([
+        fetch("/api/professionals").then((r) => r.json()),
+        fetch("/api/services").then((r) => r.json()),
+        fetch("/api/clients").then((r) => r.json()),
+      ]);
+      setProfessionals(profs);
+      setServices(servs);
+      setClients(clis);
+    }
+
+    setModalOpen(true);
+  }
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
+    const dateStr = selectedDate.toISOString().split("T")[0];
+    const datetime = `${dateStr}T${selectedTime}:00`;
+
+    const res = await fetch("/api/appointments", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        client_id: selectedClient,
+        professional_id: selectedProfessional,
+        service_id: selectedService,
+        datetime,
+      }),
+    });
+
+    if (!res.ok) {
+      const data = await res.json();
+      setFormError(data.error || "Error al crear el turno");
+      return;
+    }
+
+    setFormError("");
+    setModalOpen(false);
+
+    const date = selectedDate.toISOString().split("T")[0];
+    fetch(`/api/appointments?from=${date}&to=${date}`)
+      .then((r) => r.json())
+      .then(setAppointments);
+  }
+  
   useEffect(() => {
     const date = selectedDate.toISOString().split("T")[0];
     fetch(`/api/appointments?from=${date}&to=${date}`)
@@ -171,13 +228,15 @@ export default function AgendaPage() {
                     <span
                       className={styles.cardProfessional}
                       style={{
-                        background: profColor(a.professional?.name ?? '').bg,
-                        color: profColor(a.professional?.name ?? '').fg,
+                        background: profColor(a.professional?.name ?? "").bg,
+                        color: profColor(a.professional?.name ?? "").fg,
                       }}
                     >
                       {a.professional?.name}
                     </span>
-                    <span className={styles.cardPrice}>${a.service.price.toLocaleString("es-AR")}</span>
+                    <span className={styles.cardPrice}>
+                      ${a.service.price.toLocaleString("es-AR")}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -187,7 +246,7 @@ export default function AgendaPage() {
       </section>
 
       {/* Botón flotante */}
-      <button className={styles.fab} aria-label="Nuevo turno">
+      <button className={styles.fab} aria-label="Nuevo turno" onClick={openModal}>
         <svg
           width="22"
           height="22"
@@ -200,6 +259,80 @@ export default function AgendaPage() {
           <line x1="5" y1="12" x2="19" y2="12" />
         </svg>
       </button>
+
+      {modalOpen && (
+        <div className={styles.modalOverlay} onClick={() => { setModalOpen(false); setFormError(""); }}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <p className={styles.modalTitle}>Nuevo turno</p>
+            <form onSubmit={handleSubmit} className={styles.modalForm}>
+              <div className={styles.formGroup}>
+                <label htmlFor="professional">Profesional</label>
+                <select
+                  id="professional"
+                  value={selectedProfessional}
+                  onChange={(e) => setSelectedProfessional(e.target.value)}
+                  required
+                >
+                  <option value="">Seleccionar...</option>
+                  {professionals.map((p) => (
+                    <option key={p.id} value={p.id}>{p.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="service">Servicio</label>
+                <select
+                  id="service"
+                  value={selectedService}
+                  onChange={(e) => setSelectedService(e.target.value)}
+                  required
+                >
+                  <option value="">Seleccionar...</option>
+                  {services.filter(s => s.active).map((s) => (
+                    <option key={s.id} value={s.id}>{s.name} — {s.duration_minutes} min</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="client">Cliente</label>
+                <select
+                  id="client"
+                  value={selectedClient}
+                  onChange={(e) => setSelectedClient(e.target.value)}
+                  required
+                >
+                  <option value="">Seleccionar...</option>
+                  {clients.map((c) => (
+                    <option key={c.id} value={c.id}>{c.name}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="time">Hora</label>
+                <input
+                  type="time"
+                  id="time"
+                  value={selectedTime}
+                  onChange={(e) => setSelectedTime(e.target.value)}
+                  required
+                />
+              </div>
+
+              {formError && <p className={styles.formError}>{formError}</p>}
+
+              <div className={styles.modalActions}>
+                <button type="submit" className={styles.btnPrimary}>Guardar</button>
+                <button type="button" className={styles.btnSecondary} onClick={() => setModalOpen(false)}>
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
