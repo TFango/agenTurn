@@ -33,7 +33,7 @@ export async function handleSelectService(
   }
 
   await sendListMessage(
-    tenant.whatsapp_number,
+    tenant.phone_number_id,
     conv.client_whatsapp,
     "¿Qué servicio querés reservar?",
     "Ver servicios",

@@ -38,11 +38,11 @@ export async function handleSelectTime(
   );
 
   await sendListMessage(
-    tenant.whatsapp_number,
+    tenant.phone_number_id,
     conv.client_whatsapp,
     `¿A qué hora? (${selected_date})`,
     "Ver horarios",
-    slots.map((s) => ({
+    slots.slice(0, 10).map((s) => ({
       id: s.start,
       title: s.start,
       description: `Termina ${s.end}`,

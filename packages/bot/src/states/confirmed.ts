@@ -24,7 +24,7 @@ export async function handleConfirmed(
   });
 
   await sendTextMessage(
-    tenant.whatsapp_number,
+    tenant.phone_number_id,
     conv.client_whatsapp,
     `✅ *¡Turno confirmado!*\n\nTe esperamos el ${selected_date} a las ${selected_time} hs.\n\nSi necesitás cancelar, escribí "cancelar turno".`,
   );

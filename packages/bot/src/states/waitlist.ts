@@ -21,14 +21,14 @@ export async function handleWaitlist(
     });
     await conv.update({ state: "greeting" });
     await sendTextMessage(
-      tenant.whatsapp_number,
+      tenant.phone_number_id,
       conv.client_whatsapp,
       "✅ Te anotamos en la lista de espera. Te avisamos cuando haya un lugar disponible.",
     );
     return;
   } else if (body === "waitlist_no") {
     await sendTextMessage(
-      tenant.whatsapp_number,
+      tenant.phone_number_id,
       conv.client_whatsapp,
       "Entendido. Escribinos cuando quieras para consultar disponibilidad. 👋",
     );
@@ -37,7 +37,7 @@ export async function handleWaitlist(
   }
 
   await sendButtonMessage(
-    tenant.whatsapp_number,
+    tenant.phone_number_id,
     conv.client_whatsapp,
     "Por el momento no hay turnos disponibles en los próximos 14 días. ¿Querés que te avisemos cuando haya lugar?",
     [

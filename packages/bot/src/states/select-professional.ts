@@ -44,7 +44,7 @@ export async function handleSelectProfessional(
   }
 
   await sendListMessage(
-    tenant.whatsapp_number,
+    tenant.phone_number_id,
     conv.client_whatsapp,
     "¿Con quién querés atenderte?",
     "Ver profesionales",

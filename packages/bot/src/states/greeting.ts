@@ -11,17 +11,6 @@ export async function handleGreeting(
   client: ClientI,
   body: string,
 ) {
-  await sendButtonMessage(
-    tenant.whatsapp_number,
-    conv.client_whatsapp,
-    `¡Hola! 👋 Soy el asistente de *${tenant.name}*. ¿Qué querés hacer?`,
-    [
-      { id: "book", title: "📅 Sacar turno" },
-      { id: "cancel_appt", title: "❌ Cancelar turno" },
-      { id: "human", title: "💬 Hablar con alguien" },
-    ],
-  );
-
   if (body === "book") {
     await conv.update({ state: "select_service" });
     const { handleSelectService } = await import("./select-service");
@@ -37,4 +26,15 @@ export async function handleGreeting(
     const { handleHumanHandoff } = await import("./human-handoff");
     return handleHumanHandoff(conv, tenant, client, body);
   }
+
+  await sendButtonMessage(
+    tenant.phone_number_id,
+    conv.client_whatsapp,
+    `¡Hola! 👋 Soy el asistente de *${tenant.name}*. ¿Qué querés hacer?`,
+    [
+      { id: "book", title: "📅 Sacar turno" },
+      { id: "cancel_appt", title: "❌ Cancelar turno" },
+      { id: "human", title: "💬 Hablar con alguien" },
+    ],
+  );
 }

@@ -5,6 +5,7 @@ interface TenantAttributes {
   id: string;
   name: string;
   whatsapp_number: string;
+  phone_number_id: string;
   plan: "free" | "pro";
   subscription_status: "active" | "inactive" | "trial";
   slot_interval_minutes: number;
@@ -18,6 +19,7 @@ export class Tenant extends Model<
   declare id: string;
   declare name: string;
   declare whatsapp_number: string;
+  declare phone_number_id: string;
   declare plan: "free" | "pro";
   declare subscription_status: "active" | "inactive" | "trial";
   declare slot_interval_minutes: number;
@@ -29,6 +31,7 @@ Tenant.init(
     id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
     name: { type: DataTypes.STRING },
     whatsapp_number: { type: DataTypes.STRING },
+    phone_number_id: { type: DataTypes.STRING },
     plan: { type: DataTypes.ENUM("free", "pro"), allowNull: false },
     subscription_status: {
       type: DataTypes.ENUM("active", "inactive", "trial"),

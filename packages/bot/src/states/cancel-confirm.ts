@@ -20,7 +20,7 @@ export async function handleCancelConfirm(
     );
     await conv.update({ state: "greeting" });
     await sendTextMessage(
-      tenant.whatsapp_number,
+      tenant.phone_number_id,
       conv.client_whatsapp,
       "✅ Turno cancelado. ¡Hasta la próxima!",
     );
@@ -29,7 +29,7 @@ export async function handleCancelConfirm(
   } else if (body === "no") {
     await conv.update({ state: "greeting" });
     await sendTextMessage(
-      tenant.whatsapp_number,
+      tenant.phone_number_id,
       conv.client_whatsapp,
       "Perfecto, el turno sigue en pie. 👍",
     );
@@ -38,7 +38,7 @@ export async function handleCancelConfirm(
   }
 
   await sendButtonMessage(
-    tenant.whatsapp_number,
+    tenant.phone_number_id,
     conv.client_whatsapp,
     "¿Confirmás la cancelación del turno?",
     [

@@ -27,13 +27,15 @@ router.post("/", (req: Request, res: Response) => {
 
   const from = message.from;
   const to = storeNumber.display_phone_number;
-  const body = message.text.body;
+  const body: string = message.type === 'text'
+    ? message.text.body
+    : message.interactive?.button_reply?.id ?? message.interactive?.list_reply?.id ?? '';
   const contactName = customerData.profile.name;
 
   handleIncomingMessage(from, to, body, contactName).catch(console.error);
 });
 
-async function handleIncomingMessage(from, to, body, contactName) {
+async function handleIncomingMessage(from: string, to: string, body: string, contactName?: string) {
   const { routeMessage } = await import("../router");
   await routeMessage(from, to, body, contactName);
 }

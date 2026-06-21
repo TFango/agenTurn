@@ -36,7 +36,7 @@ export async function handleConfirm(
   }
 
   await sendButtonMessage(
-    tenant.whatsapp_number,
+    tenant.phone_number_id,
     conv.client_whatsapp,
     `*Resumen de tu turno:*\n📋 Servicio: ${service_name}\n👩 Profesional: ${professional_name}\n📅 Fecha: ${selected_date}\n⏰ Hora: ${selected_time} (${service_duration} min)\n\n¿Confirmás?`,
     [
