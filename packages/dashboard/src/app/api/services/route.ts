@@ -14,7 +14,6 @@ export async function GET(req: NextRequest) {
   const services = await Service.findAll({
     where: {
       tenant_id: tenantId,
-      active: true,
     },
   });
 

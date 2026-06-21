@@ -11,9 +11,18 @@ interface AppointmentAttributes {
   status: "pending" | "confirmed" | "cancelled";
 }
 
+interface AppointmentCreationAttributes {
+  tenant_id: string;
+  professional_id: string;
+  service_id: string;
+  client_id: string;
+  datetime: Date;
+  status: "pending" | "confirmed" | "cancelled";
+}
+
 export class Appointment extends Model<
   AppointmentAttributes,
-  AppointmentAttributes
+  AppointmentCreationAttributes
 > {
   declare id: string;
   declare tenant_id: string;
