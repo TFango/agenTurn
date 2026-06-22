@@ -72,6 +72,17 @@ export default function AgendaPage() {
     setModalOpen(true);
   }
 
+  async function handleCancel(id: string) {
+    const res = await fetch(`/api/appointments/${id}`, {
+      method: "PATCH",
+    });
+
+    const date = selectedDate.toISOString().split("T")[0];
+    fetch(`/api/appointments?from=${date}&to=${date}`)
+      .then((r) => r.json())
+      .then(setAppointments);
+  }
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
@@ -103,7 +114,7 @@ export default function AgendaPage() {
       .then((r) => r.json())
       .then(setAppointments);
   }
-  
+
   useEffect(() => {
     const date = selectedDate.toISOString().split("T")[0];
     fetch(`/api/appointments?from=${date}&to=${date}`)
@@ -204,7 +215,7 @@ export default function AgendaPage() {
             const timeStart = toTimeString(a.datetime);
 
             return (
-              <div className={styles.appointmentRow} key={a.id}>
+              <div className={`${styles.appointmentRow} ${a.status === "cancelled" ? styles.appointmentCancelled : ""}`} key={a.id}>
                 <div className={styles.timeCol}>
                   <span className={styles.timeStart}>{timeStart}</span>
                   <span className={styles.timeDuration}>
@@ -237,6 +248,17 @@ export default function AgendaPage() {
                     <span className={styles.cardPrice}>
                       ${a.service.price.toLocaleString("es-AR")}
                     </span>
+                    {a.status === "confirmed" && (
+                      <button
+                        className={styles.btnCancel}
+                        onClick={() => handleCancel(a.id)}
+                      >
+                        Cancelar
+                      </button>
+                    )}
+                    {a.status === "cancelled" && (
+                      <span className={styles.cancelledBadge}>Cancelado</span>
+                    )}
                   </div>
                 </div>
               </div>
@@ -246,7 +268,11 @@ export default function AgendaPage() {
       </section>
 
       {/* Botón flotante */}
-      <button className={styles.fab} aria-label="Nuevo turno" onClick={openModal}>
+      <button
+        className={styles.fab}
+        aria-label="Nuevo turno"
+        onClick={openModal}
+      >
         <svg
           width="22"
           height="22"
@@ -261,7 +287,13 @@ export default function AgendaPage() {
       </button>
 
       {modalOpen && (
-        <div className={styles.modalOverlay} onClick={() => { setModalOpen(false); setFormError(""); }}>
+        <div
+          className={styles.modalOverlay}
+          onClick={() => {
+            setModalOpen(false);
+            setFormError("");
+          }}
+        >
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <p className={styles.modalTitle}>Nuevo turno</p>
             <form onSubmit={handleSubmit} className={styles.modalForm}>
@@ -275,7 +307,9 @@ export default function AgendaPage() {
                 >
                   <option value="">Seleccionar...</option>
                   {professionals.map((p) => (
-                    <option key={p.id} value={p.id}>{p.name}</option>
+                    <option key={p.id} value={p.id}>
+                      {p.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -289,9 +323,13 @@ export default function AgendaPage() {
                   required
                 >
                   <option value="">Seleccionar...</option>
-                  {services.filter(s => s.active).map((s) => (
-                    <option key={s.id} value={s.id}>{s.name} — {s.duration_minutes} min</option>
-                  ))}
+                  {services
+                    .filter((s) => s.active)
+                    .map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.name} — {s.duration_minutes} min
+                      </option>
+                    ))}
                 </select>
               </div>
 
@@ -305,7 +343,9 @@ export default function AgendaPage() {
                 >
                   <option value="">Seleccionar...</option>
                   {clients.map((c) => (
-                    <option key={c.id} value={c.id}>{c.name}</option>
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -324,8 +364,14 @@ export default function AgendaPage() {
               {formError && <p className={styles.formError}>{formError}</p>}
 
               <div className={styles.modalActions}>
-                <button type="submit" className={styles.btnPrimary}>Guardar</button>
-                <button type="button" className={styles.btnSecondary} onClick={() => setModalOpen(false)}>
+                <button type="submit" className={styles.btnPrimary}>
+                  Guardar
+                </button>
+                <button
+                  type="button"
+                  className={styles.btnSecondary}
+                  onClick={() => setModalOpen(false)}
+                >
                   Cancelar
                 </button>
               </div>

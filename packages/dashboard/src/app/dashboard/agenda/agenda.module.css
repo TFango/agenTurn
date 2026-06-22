@@ -506,3 +506,68 @@
 .btnSecondary:hover {
   color: var(--ink-2);
 }
+
+/* ── Cancel button ── */
+.btnCancel {
+  margin-left: auto;
+  padding: 3px 10px;
+  background: transparent;
+  color: var(--ink-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  font-size: 11px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnCancel:hover {
+  color: var(--rose);
+  border-color: var(--rose);
+  background: var(--rose-soft);
+}
+
+.btnCancel:active {
+  transform: scale(0.95);
+}
+
+/* ── Cancelled appointment ── */
+.appointmentCancelled .appointmentCard {
+  background: var(--cream);
+  border-style: dashed;
+  border-color: var(--line);
+  opacity: 0.7;
+}
+
+.appointmentCancelled .cardService {
+  text-decoration: line-through;
+  text-decoration-color: var(--ink-4);
+  color: var(--ink-3);
+}
+
+.appointmentCancelled .cardClient {
+  color: var(--ink-4);
+}
+
+.appointmentCancelled .dot {
+  border-color: var(--line);
+  background: var(--line);
+}
+
+.appointmentCancelled .timeStart {
+  color: var(--ink-4);
+}
+
+.cancelledBadge {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--rose);
+  background: var(--rose-soft);
+  padding: 2px 8px;
+  border-radius: var(--r-full);
+  margin-left: auto;
+}
