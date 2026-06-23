@@ -571,3 +571,45 @@
   border-radius: var(--r-full);
   margin-left: auto;
 }
+
+/* ── Month navigation ── */
+.monthNav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.monthNav .dayStripMonth {
+  margin-bottom: 0;
+  min-width: 110px;
+  text-align: center;
+}
+
+.monthNavBtn {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--r-full);
+  border: 1px solid var(--line);
+  background: var(--cream);
+  color: var(--ink-3);
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.monthNavBtn:hover {
+  border-color: var(--terra);
+  color: var(--terra);
+  background: var(--terra-soft);
+}
+
+.monthNavBtn:active {
+  transform: scale(0.9);
+}

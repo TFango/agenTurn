@@ -21,10 +21,17 @@ export default function MetricasPage() {
 
   useEffect(() => {
     fetch("/api/metrics")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error("Error al cargar métricas");
+        return r.json();
+      })
       .then((data) => {
         setMetrics(data);
         setTimeout(() => setLoaded(true), 50);
+      })
+      .catch(() => {
+        setMetrics({ monthTotal: 0, cancelledMonth: 0, uniqueClients: 0, revenue: 0, topServices: [] });
+        setLoaded(true);
       });
   }, []);
 

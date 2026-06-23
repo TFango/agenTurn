@@ -12,3 +12,7 @@ packages/dashboard/out/
 # Build outputs
 packages/bot/dist/
 packages/db/dist/
+
+# Serwist generated
+packages/dashboard/public/sw.js
+packages/dashboard/public/swe-worker-*.js

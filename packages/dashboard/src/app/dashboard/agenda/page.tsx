@@ -41,8 +41,16 @@ function profColor(name: string) {
 
 export default function AgendaPage() {
   const today = new Date();
-  const monthDays = getMonthDays(today);
-  const todayDate = today.getDate();
+  const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
+  const monthDays = getMonthDays(currentMonth);
+
+  function prevMonth() {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1));
+  }
+
+  function nextMonth() {
+    setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1));
+  }
 
   const [selectedProfessional, setSelectedProfessional] = useState<string>("");
   const [selectedService, setSelectedService] = useState<string>("");
@@ -160,18 +168,22 @@ export default function AgendaPage() {
 
       {/* Selector de días */}
       <div className={styles.dayStripWrapper}>
-        <p className={styles.dayStripMonth}>
-          {today.toLocaleDateString("es-AR", {
-            month: "long",
-            year: "numeric",
-          })}
-        </p>
+        <div className={styles.monthNav}>
+          <button onClick={prevMonth} className={styles.monthNavBtn}>←</button>
+          <p className={styles.dayStripMonth}>
+            {currentMonth.toLocaleDateString("es-AR", {
+              month: "long",
+              year: "numeric",
+            })}
+          </p>
+          <button onClick={nextMonth} className={styles.monthNavBtn}>→</button>
+        </div>
         <div className={styles.dayStrip}>
           {monthDays.map((d) => (
             <button
               onClick={() => setSelectedDate(d)}
               key={d.getDate()}
-              className={`${styles.dayItem} ${d.getDate() === selectedDate.getDate() ? styles.dayActive : ""}`}
+              className={`${styles.dayItem} ${d.toDateString() === selectedDate.toDateString() ? styles.dayActive : ""}`}
             >
               <span className={styles.dayLabel}>{DAY_LABELS[d.getDay()]}</span>
               <span className={styles.dayNumber}>{d.getDate()}</span>
