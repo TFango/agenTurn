@@ -11,8 +11,9 @@ interface DaysBlocked {
 }
 
 function formatDate(dateStr: string) {
-  const d = new Date(dateStr);
-  return d.toLocaleDateString("es-AR", {
+  const [y, m, d] = dateStr.split("-").map(Number);
+  const date = new Date(y, m - 1, d);
+  return date.toLocaleDateString("es-AR", {
     weekday: "long",
     day: "numeric",
     month: "long",

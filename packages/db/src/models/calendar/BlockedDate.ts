@@ -32,7 +32,7 @@ BlockedDate.init(
       defaultValue: DataTypes.UUIDV4,
     },
     professional_id: { type: DataTypes.UUID },
-    date: { type: DataTypes.DATE },
+    date: { type: DataTypes.DATEONLY },
     reason: { type: DataTypes.STRING },
   },
   { sequelize, tableName: "blocked_dates" },

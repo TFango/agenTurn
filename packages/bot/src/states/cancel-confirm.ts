@@ -1,4 +1,10 @@
-import { ConversationState, Tenant, Client, Appointment } from "@agenturn/db";
+import {
+  ConversationState,
+  Tenant,
+  Client,
+  Appointment,
+  Notification,
+} from "@agenturn/db";
 import { sendButtonMessage, sendTextMessage } from "../whatsapp/whatsapp";
 
 type ConversationI = InstanceType<typeof ConversationState>;
@@ -18,13 +24,22 @@ export async function handleCancelConfirm(
       { status: "cancelled" },
       { where: { id: appointment_id, client_id: client.id } },
     );
+
+    await Notification.create({
+      type: "cancelled_appointment",
+      title: "Turno cancelado",
+      body: `${client.name} cancelo su turno`,
+      tenant_id: tenant.id,
+    });
+
     await conv.update({ state: "greeting" });
+
     await sendTextMessage(
       tenant.phone_number_id,
       conv.client_whatsapp,
       "✅ Turno cancelado. ¡Hasta la próxima!",
     );
-    
+
     return;
   } else if (body === "no") {
     await conv.update({ state: "greeting" });

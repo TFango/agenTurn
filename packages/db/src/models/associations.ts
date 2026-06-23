@@ -33,7 +33,7 @@ WaitList.belongsTo(Tenant, { foreignKey: "tenant_id" });
 Professional.hasMany(WorkingHours, { foreignKey: "professional_id" });
 WorkingHours.belongsTo(Professional, { foreignKey: "professional_id" });
 
-Professional.hasMany(Appointment, { foreignKey: "professional_id" });
+Professional.hasMany(Appointment, { foreignKey: "professional_id", as: "appointments" });
 Appointment.belongsTo(Professional, {
   foreignKey: "professional_id",
   as: "professional",

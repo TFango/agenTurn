@@ -1,4 +1,10 @@
-import { ConversationState, Tenant, Client, Appointment } from "@agenturn/db";
+import {
+  ConversationState,
+  Tenant,
+  Client,
+  Appointment,
+  Notification,
+} from "@agenturn/db";
 import { sendTextMessage } from "../whatsapp/whatsapp";
 
 type ConversationI = InstanceType<typeof ConversationState>;
@@ -11,8 +17,13 @@ export async function handleConfirmed(
   client: ClientI,
   body: string,
 ) {
-  const { professional_id, service_id, selected_date, selected_time } =
-    conv.temp_data as Record<string, string>;
+  const {
+    professional_id,
+    service_id,
+    selected_date,
+    selected_time,
+    service_name,
+  } = conv.temp_data as Record<string, string>;
 
   await Appointment.create({
     tenant_id: tenant.id,
@@ -21,6 +32,13 @@ export async function handleConfirmed(
     client_id: client.id,
     datetime: new Date(`${selected_date}T${selected_time}:00`),
     status: "confirmed",
+  });
+
+  await Notification.create({
+    tenant_id: tenant.id,
+    type: "new_appointment",
+    title: "Nuevo turno",
+    body: `${client.name} saco turno para ${service_name} a las ${selected_time}`,
   });
 
   await sendTextMessage(

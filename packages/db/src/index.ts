@@ -10,6 +10,7 @@ export { User } from './models/users/User'
 export { Client } from './models/client/Client'
 export { ConversationState } from './models/client/ConversationState'
 export { WaitList } from './models/client/Waitlist'
+export { Notification } from './models/core/Notification'
 
 export { getAvailableSlots } from './scheduling'
 export type { WorkingHoursRange, TimeSlot } from './scheduling'
