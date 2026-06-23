@@ -20,6 +20,7 @@ export async function POST(req: NextRequest) {
   const tenant = await Tenant.create({
     name: localName,
     whatsapp_number: '',
+    phone_number_id: '',
     plan: 'free',
     subscription_status: 'active',
     slot_interval_minutes: 0,

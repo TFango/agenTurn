@@ -78,7 +78,7 @@ export async function GET(_req: NextRequest) {
       status: "confirmed",
       datetime: { [Op.gte]: startOfMonth },
     },
-    attributes: ["service_id", [fn("COUNT", col("Appointment.id")), "count"]],
+    attributes: ["service_id", [fn("COUNT", col("n.id")), "count"]],
     include: [{ model: Service, as: "service", attributes: ["name"] }],
     group: ["service_id", "service.id"],
     order: [[literal("count"), "DESC"]],
