@@ -11,6 +11,7 @@ export { Client } from './models/client/Client'
 export { ConversationState } from './models/client/ConversationState'
 export { WaitList } from './models/client/Waitlist'
 export { Notification } from './models/core/Notification'
+export { ServiceCategory}  from "./models/core/ServiceCategory"
 
 export { getAvailableSlots } from './scheduling'
 export type { WorkingHoursRange, TimeSlot } from './scheduling'
