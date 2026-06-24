@@ -1,4 +1,4 @@
-import { ConversationState, Tenant, Client, Professional } from "@agenturn/db";
+import { ConversationState, Tenant, Client, Professional, ServiceCategory } from "@agenturn/db";
 import { sendListMessage } from "../whatsapp/whatsapp";
 
 type ConversationI = InstanceType<typeof ConversationState>;
@@ -11,9 +11,19 @@ export async function handleSelectProfessional(
   client: ClientI,
   body: string,
 ): Promise<void> {
-  const professionals = await Professional.findAll({
-    where: { tenant_id: tenant.id, active: true },
-  });
+  const { category_id } = conv.temp_data as { category_id?: string };
+
+  let professionals;
+  if (category_id) {
+    const category = await ServiceCategory.findByPk(category_id);
+    if (category) {
+      professionals = await (category as any).getProfessionals({ where: { active: true } });
+    } else {
+      professionals = await Professional.findAll({ where: { tenant_id: tenant.id, active: true } });
+    }
+  } else {
+    professionals = await Professional.findAll({ where: { tenant_id: tenant.id, active: true } });
+  }
 
   const selected = professionals.find((s) => s.id === body);
 

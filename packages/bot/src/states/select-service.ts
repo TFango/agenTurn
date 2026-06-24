@@ -11,9 +11,12 @@ export async function handleSelectService(
   client: ClientI,
   body: string,
 ) {
-  const services = await Service.findAll({
-    where: { tenant_id: tenant.id, active: true },
-  });
+  const { category_id } = conv.temp_data as { category_id?: string };
+
+  const where: any = { tenant_id: tenant.id, active: true };
+  if (category_id) where.category_id = category_id;
+
+  const services = await Service.findAll({ where });
 
   const selected = services.find((s) => s.id === body);
 

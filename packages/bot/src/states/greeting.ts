@@ -12,9 +12,9 @@ export async function handleGreeting(
   body: string,
 ) {
   if (body === "book") {
-    await conv.update({ state: "select_service" });
-    const { handleSelectService } = await import("./select-service");
-    return handleSelectService(conv, tenant, client, body);
+    await conv.update({ state: "select_category" });
+    const { handleSelectCategory } = await import("./select-category");
+    return handleSelectCategory(conv, tenant, client, body);
   }
   if (body === "cancel_appt") {
     await conv.update({ state: "cancel_select" });

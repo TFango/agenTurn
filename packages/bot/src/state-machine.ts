@@ -1,5 +1,6 @@
 import { Client, ConversationState, Tenant } from "@agenturn/db";
 import { handleGreeting } from "./states/greeting";
+import { handleSelectCategory } from "./states/select-category";
 import { handleSelectService } from "./states/select-service";
 import { handleSelectProfessional } from "./states/select-professional";
 import { handleSelectDate } from "./states/select-date";
@@ -25,6 +26,7 @@ export async function dispatchState(
 
   switch (conv.state) {
     case "greeting":            return handleGreeting(conv, tenant, client, body);
+    case "select_category":     return handleSelectCategory(conv, tenant, client, body);
     case "select_service":      return handleSelectService(conv, tenant, client, body);
     case "select_professional": return handleSelectProfessional(conv, tenant, client, body);
     case "select_date":         return handleSelectDate(conv, tenant, client, body);
