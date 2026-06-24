@@ -72,3 +72,9 @@ ServiceCategory.belongsToMany(Professional, {
   through: ProfessionalCategory,
   foreignKey: "category_id",
 });
+
+ServiceCategory.hasMany(Service, { foreignKey: "category_id", as: "services" });
+Service.belongsTo(ServiceCategory, {
+  foreignKey: "category_id",
+  as: "category",
+});
