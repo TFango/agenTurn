@@ -4,10 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./profesionales.module.css";
 
+interface Category {
+  id: string;
+  name: string;
+}
+
 interface ProfessionalInterface {
   id: string;
   name: string;
   active: boolean;
+  ServiceCategories?: Category[];
 }
 
 const AVATAR_COLORS = [
@@ -20,15 +26,31 @@ const AVATAR_COLORS = [
 
 export default function ProfesionalesPage() {
   const [professionals, setProfessionals] = useState<ProfessionalInterface[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   const [name, setName] = useState("");
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/professionals")
-      .then((r) => r.json())
-      .then(setProfessionals);
+    async function load() {
+      const [profs, cats] = await Promise.all([
+        fetch("/api/professionals").then((r) => r.json()),
+        fetch("/api/categories").then((r) => r.json()),
+      ]);
+      setProfessionals(profs);
+      setCategories(cats);
+    }
+    load();
   }, []);
+
+  function toggleCategory(categoryId: string) {
+    setSelectedCategoryIds((prev) =>
+      prev.includes(categoryId)
+        ? prev.filter((id) => id !== categoryId)
+        : [...prev, categoryId],
+    );
+  }
 
   async function handleAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -43,11 +65,17 @@ export default function ProfesionalesPage() {
     const nuevo = await fetch("/api/professionals", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, active: true }),
+      body: JSON.stringify({
+        name,
+        active: true,
+        categoryIds: selectedCategoryIds,
+      }),
     }).then((r) => r.json());
 
-    setProfessionals([...professionals, nuevo]);
+    const refreshed = await fetch("/api/professionals").then((r) => r.json());
+    setProfessionals(refreshed);
     setName("");
+    setSelectedCategoryIds([]);
     setLoading(false);
   }
 
@@ -106,6 +134,25 @@ export default function ProfesionalesPage() {
               </button>
             </div>
             {error && <p className={styles.errorMsg} role="alert">{error}</p>}
+
+            {categories.length > 0 && (
+              <div className={styles.categorySection}>
+                <p className={styles.categoryLabel}>CATEGORÍAS</p>
+                <div className={styles.categoryCheckboxes}>
+                  {categories.map((cat) => (
+                    <label key={cat.id} className={styles.checkboxItem}>
+                      <input
+                        type="checkbox"
+                        checked={selectedCategoryIds.includes(cat.id)}
+                        onChange={() => toggleCategory(cat.id)}
+                        className={styles.checkbox}
+                      />
+                      <span className={styles.checkboxText}>{cat.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </form>
         </div>
 
@@ -148,6 +195,15 @@ export default function ProfesionalesPage() {
                       </div>
                       <div>
                         <p className={styles.itemName}>{p.name}</p>
+                        {p.ServiceCategories && p.ServiceCategories.length > 0 && (
+                          <div className={styles.itemCategories}>
+                            {p.ServiceCategories.map((cat) => (
+                              <span key={cat.id} className={styles.itemCategoryBadge}>
+                                {cat.name}
+                              </span>
+                            ))}
+                          </div>
+                        )}
                         <span className={`${styles.statusBadge} ${p.active ? styles.statusActive : styles.statusPaused}`}>
                           {p.active ? "Disponible" : "En pausa"}
                         </span>

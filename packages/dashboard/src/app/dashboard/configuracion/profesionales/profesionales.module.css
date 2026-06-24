@@ -340,3 +340,84 @@
   border-color: var(--rose);
   color: white;
 }
+
+/* ── Category selection (form) ── */
+.categorySection {
+  padding-top: 4px;
+}
+
+.categoryLabel {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.categoryCheckboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.checkboxItem {
+  cursor: pointer;
+  display: flex;
+}
+
+.checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.checkboxText {
+  display: block;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  color: var(--ink-3);
+  background: var(--cream);
+  border: 1px solid var(--line);
+  border-radius: var(--r-full);
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.checkboxItem:hover .checkboxText {
+  border-color: var(--terra);
+  color: var(--ink-2);
+}
+
+.checkbox:checked + .checkboxText {
+  background: var(--terra-soft);
+  border-color: var(--terra);
+  color: var(--terra);
+  font-weight: 600;
+}
+
+.checkbox:focus-visible + .checkboxText {
+  box-shadow: 0 0 0 3px var(--terra-soft);
+}
+
+/* ── Category badges (list items) ── */
+.itemCategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-bottom: 3px;
+}
+
+.itemCategoryBadge {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--plum);
+  background: var(--plum-soft);
+  padding: 1px 7px;
+  border-radius: var(--r-full);
+  line-height: 1.5;
+}
