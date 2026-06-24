@@ -9,6 +9,7 @@ import { Client } from "./client/Client";
 import { ConversationState } from "./client/ConversationState";
 import { WaitList } from "./client/Waitlist";
 import { ServiceCategory } from "./core/ServiceCategory";
+import { ProfessionalCategory } from "./core/ProfessionalCategory";
 
 Tenant.hasMany(Professional, { foreignKey: "tenant_id" });
 Professional.belongsTo(Tenant, { foreignKey: "tenant_id" });
@@ -62,3 +63,12 @@ WaitList.belongsTo(Client, { foreignKey: "client_id" });
 
 Tenant.hasMany(ServiceCategory, { foreignKey: "tenant_id" });
 ServiceCategory.belongsTo(Tenant, { foreignKey: "tenant_id" });
+
+Professional.belongsToMany(ServiceCategory, {
+  through: ProfessionalCategory,
+  foreignKey: "professional_id",
+});
+ServiceCategory.belongsToMany(Professional, {
+  through: ProfessionalCategory,
+  foreignKey: "category_id",
+});
