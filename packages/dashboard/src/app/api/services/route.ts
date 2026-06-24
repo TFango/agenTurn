@@ -22,9 +22,9 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const { name, durationMinutes, price, active } = body;
+  const { name, durationMinutes, price, active, category_id } = body;
 
-  if (!name || !durationMinutes || !price || !active) {
+  if (!name || !durationMinutes || !price) {
     return NextResponse.json(
       { error: "Todos los campos son obligatorios" },
       { status: 400 },
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
     duration_minutes: durationMinutes,
     price,
     active,
+    category_id,
   });
 
   return NextResponse.json(service, { status: 201 });

@@ -15,9 +15,14 @@ export async function PUT(
   const body = await req.json();
   const { id } = await params;
 
-  const { name, active } = body;
+  const { name, active, categoryIds } = body;
 
   await Professional.update({ name, active }, { where: { id } });
+
+  if (categoryIds) {
+    const professional = await Professional.findByPk(id);
+    await (professional as any).setServiceCategories(categoryIds);
+  }
 
   return NextResponse.json({ ok: true });
 }
