@@ -12,7 +12,8 @@ export type ConversationStateEnum =
   | "cancel_select"
   | "cancel_confirm"
   | "human_handoff"
-  | "waitlist";
+  | "waitlist"
+  | "select_category";
 
 interface ConversationStateAttributes {
   id: string;
@@ -45,7 +46,11 @@ export class ConversationState extends Model<
 
 ConversationState.init(
   {
-    id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
+    id: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      defaultValue: DataTypes.UUIDV4,
+    },
     tenant_id: { type: DataTypes.UUID },
     client_whatsapp: { type: DataTypes.STRING },
     state: {
@@ -61,6 +66,7 @@ ConversationState.init(
         "cancel_confirm",
         "human_handoff",
         "waitlist",
+        "select_category",
       ),
     },
     temp_data: { type: DataTypes.JSONB },
