@@ -14,28 +14,56 @@ interface DayConfig {
   end_time: string;
 }
 
+interface Professional {
+  id: string;
+  name: string;
+}
+
+function parseDays(fromDb: any[]): DayConfig[] {
+  return [0, 1, 2, 3, 4, 5, 6].map((dow) => {
+    const found = fromDb.find((d: any) => d.day_of_week === dow);
+    return {
+      day_of_week: dow,
+      active: !!found,
+      start_time: found?.start_time ?? "09:00",
+      end_time: found?.end_time ?? "18:00",
+    };
+  });
+}
+
 export default function HorariosPage() {
-  const [days, setDays]       = useState<DayConfig[]>([]);
-  const [saving, setSaving]   = useState(false);
-  const [saved, setSaved]     = useState(false);
+  const [days, setDays] = useState<DayConfig[]>([]);
+  const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [selectedProfId, setSelectedProfId] = useState<string>("");
 
   useEffect(() => {
-    fetch("/api/workingHours")
-      .then((r) => r.json())
-      .then((data) => {
-        const fromDb = data.workingHours;
-        const allDays = [0, 1, 2, 3, 4, 5, 6].map((dow) => {
-          const found = fromDb.find((d: any) => d.day_of_week === dow);
-          return {
-            day_of_week: dow,
-            active: !!found,
-            start_time: found?.start_time ?? "09:00",
-            end_time: found?.end_time ?? "18:00",
-          };
-        });
-        setDays(allDays);
-      });
+    async function load() {
+      const [profsRes, hoursRes] = await Promise.all([
+        fetch("/api/professionals").then((r) => r.json()),
+        fetch("/api/workingHours").then((r) => r.json()),
+      ]);
+      setProfessionals(profsRes);
+      if (profsRes.length > 0) {
+        setSelectedProfId(profsRes[0].id);
+      }
+      setDays(parseDays(hoursRes.workingHours));
+    }
+    load();
   }, []);
+
+  async function loadHours(profId: string) {
+    const res = await fetch(`/api/workingHours?professionalId=${profId}`);
+    const data = await res.json();
+    setDays(parseDays(data.workingHours));
+    setSaved(false);
+  }
+
+  function handleProfessionalChange(profId: string) {
+    setSelectedProfId(profId);
+    loadHours(profId);
+  }
 
   function toggle(i: number, checked: boolean) {
     const updated = [...days];
@@ -56,9 +84,10 @@ export default function HorariosPage() {
     await fetch("/api/workingHours", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(
-        days.filter((d) => d.active).map(({ active, ...rest }) => rest),
-      ),
+      body: JSON.stringify({
+        professionalId: selectedProfId || undefined,
+        hours: days.filter((d) => d.active).map(({ active, ...rest }) => rest),
+      }),
     });
     setSaving(false);
     setSaved(true);
@@ -82,6 +111,21 @@ export default function HorariosPage() {
       </header>
 
       <div className={styles.content}>
+
+        {professionals.length > 1 && (
+          <div className={styles.profSelector}>
+            <label className={styles.profLabel}>PROFESIONAL</label>
+            <select
+              className={styles.profSelect}
+              value={selectedProfId}
+              onChange={(e) => handleProfessionalChange(e.target.value)}
+            >
+              {professionals.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         <div className={styles.summaryBadge}>
           <span className={styles.summaryDot} />

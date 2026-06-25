@@ -10,19 +10,20 @@ export async function GET(req: NextRequest) {
   }
 
   const tenantId = await getTenantId(session);
-  const professional = await Professional.findOne({
-    where: { tenant_id: tenantId },
-  });
+  const { searchParams } = new URL(req.url);
+  const professionalId = searchParams.get("professionalId");
 
-  if (!professional) {
-    return NextResponse.json(
-      { messsage: "No se encontro el profesional" },
-      { status: 404 },
-    );
+  let profId: string | undefined = professionalId ?? undefined;
+
+  if (!profId) {
+    const profesional = await Professional.findOne({
+      where: { tenant_id: tenantId },
+    });
+    profId = profesional?.id;
   }
 
   const workingHours = await WorkingHours.findAll({
-    where: { professional_id: professional.id },
+    where: { professional_id: profId },
   });
 
   return NextResponse.json({ workingHours });
@@ -35,24 +36,29 @@ export async function PUT(req: NextRequest) {
     return error;
   }
 
-  const body = await req.json();
-
+  const { professionalId, hours } = await req.json();
   const tenantId = await getTenantId(session);
-  const profesional = await Professional.findOne({
-    where: { tenant_id: tenantId },
-  });
 
-  if (!profesional) {
+  let profId: string | undefined = professionalId;
+
+  if (!profId) {
+    const profesional = await Professional.findOne({
+      where: { tenant_id: tenantId },
+    });
+    profId = profesional?.id;
+  }
+
+  if (!profId) {
     return NextResponse.json(
       { message: "No se encontro el profesional" },
       { status: 404 },
     );
   }
 
-  await WorkingHours.destroy({ where: { professional_id: profesional.id } });
+  await WorkingHours.destroy({ where: { professional_id: profId } });
 
   await WorkingHours.bulkCreate(
-    body.map((item: any) => ({ ...item, professional_id: profesional.id })),
+    hours.map((item: any) => ({ ...item, professional_id: profId })),
   );
 
   return NextResponse.json({ ok: true });
