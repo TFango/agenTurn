@@ -13,7 +13,7 @@ export async function handleSelectProfessional(
 ): Promise<void> {
   const { category_id } = conv.temp_data as { category_id?: string };
 
-  let professionals;
+  let professionals: any[];
   if (category_id) {
     const category = await ServiceCategory.findByPk(category_id);
     if (category) {
