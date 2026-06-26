@@ -6,6 +6,7 @@ import {
   Notification,
 } from "@agenturn/db";
 import { sendTextMessage } from "../whatsapp/whatsapp";
+import { getSlotsForDate } from "./select-date";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -16,14 +17,35 @@ export async function handleConfirmed(
   tenant: TenantI,
   client: ClientI,
   body: string,
-) {
+): Promise<void> {
   const {
     professional_id,
     service_id,
     selected_date,
     selected_time,
     service_name,
+    service_duration,
   } = conv.temp_data as Record<string, string>;
+
+  const slots = await getSlotsForDate(
+    professional_id,
+    selected_date,
+    Number(service_duration),
+    tenant.slot_interval_minutes,
+  );
+
+  const stillAvailable = slots.some((s) => s.start === selected_time);
+
+  if (!stillAvailable) {
+    await sendTextMessage(
+      tenant.phone_number_id,
+      conv.client_whatsapp,
+      "😕 Ese horario se acaba de ocupar. Te muestro los que quedan:",
+    );
+    await conv.update({ state: "select_time", temp_data: { ...conv.temp_data, selected_time: undefined } });
+    const { handleSelectTime } = await import("./select-time");
+    return handleSelectTime(conv, tenant, client, "");
+  }
 
   await Appointment.create({
     tenant_id: tenant.id,
