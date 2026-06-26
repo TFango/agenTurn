@@ -10,7 +10,7 @@ import {
 } from "@agenturn/db";
 import { sendListMessage, sendTextMessage } from "../whatsapp/whatsapp";
 import { Op } from "sequelize";
-import { todayAR, getHoursAR, getMinutesAR } from "../utils/date";
+import { todayAR, nowAR, getHoursAR, getMinutesAR } from "../utils/date";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -126,12 +126,23 @@ export async function getSlotsForDate(
     };
   });
 
-  return getAvailableSlots(
+  const slots = getAvailableSlots(
     { start_time: wh.start_time, end_time: wh.end_time },
     dayAppointments,
     serviceDuration,
     slotInterval,
   );
+
+  if (date === todayAR()) {
+    const now = nowAR();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    return slots.filter((s) => {
+      const [h, m] = s.start.split(":").map(Number);
+      return h * 60 + m > nowMinutes;
+    });
+  }
+
+  return slots;
 }
 
 // Busca los próximos 14 días que tengan al menos un slot disponible

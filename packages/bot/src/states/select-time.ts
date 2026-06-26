@@ -19,16 +19,6 @@ export async function handleSelectTime(
       selected_date: string;
     };
 
-  // Si el cliente ya eligió un horario (formato HH:MM)
-  if (body.match(/^\d{2}:\d{2}$/)) {
-    await conv.update({
-      state: "confirm",
-      temp_data: { ...conv.temp_data, selected_time: body },
-    });
-    const { handleConfirm } = await import("./confirm");
-    return handleConfirm(conv, tenant, client, body);
-  }
-
   // Mostrar slots disponibles para la fecha elegida
   const slots = await getSlotsForDate(
     professional_id,
@@ -36,6 +26,17 @@ export async function handleSelectTime(
     service_duration,
     tenant.slot_interval_minutes,
   );
+
+  const selected = slots.find((s) => s.start === body);
+
+  if (selected) {
+    await conv.update({
+      state: "confirm",
+      temp_data: { ...conv.temp_data, selected_time: selected.start },
+    });
+    const { handleConfirm } = await import("./confirm");
+    return handleConfirm(conv, tenant, client, body);
+  }
 
   await sendListMessage(
     tenant.phone_number_id,

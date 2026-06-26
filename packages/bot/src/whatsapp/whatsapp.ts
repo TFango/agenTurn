@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const BASE_URL = "https://graph.facebook.com/v18.0";
+const BASE_URL = "https://graph.facebook.com/v21.0";
 
 function getHeaders() {
   return {
@@ -9,50 +9,48 @@ function getHeaders() {
   };
 }
 
+async function send(phoneNumberId: string, to: string, payload: object) {
+  try {
+    await axios.post(
+      `${BASE_URL}/${phoneNumberId}/messages`,
+      { messaging_product: "whatsapp", to, ...payload },
+      { headers: getHeaders() },
+    );
+  } catch (err: any) {
+    console.error(`[WhatsApp] Error enviando a ${to}:`, err.response?.data ?? err.message);
+  }
+}
+
 export async function sendTextMessage(
   phoneNumberId: string,
   to: string,
   text: string,
 ) {
-  await axios.post(
-    `${BASE_URL}/${phoneNumberId}/messages`,
-    {
-      messaging_product: "whatsapp",
-      to: to,
-      type: "text",
-      text: { body: text },
-    },
-    { headers: getHeaders() },
-  );
+  await send(phoneNumberId, to, {
+    type: "text",
+    text: { body: text },
+  });
 }
 
 export async function sendButtonMessage(
   phoneNumberId: string,
   to: string,
   bodyText: string,
-  buttoms: Array<{ id: string; title: string }>,
+  buttons: Array<{ id: string; title: string }>,
 ) {
-  await axios.post(
-    `${BASE_URL}/${phoneNumberId}/messages`,
-    {
-      type: "interactive",
-      to: to,
-      messaging_product: "whatsapp",
-      interactive: {
-        type: "button",
-        body: { text: bodyText },
-        action: {
-          buttons: buttoms.map((b) => ({
-            type: "reply",
-            reply: { id: b.id, title: b.title },
-          })),
-        },
+  await send(phoneNumberId, to, {
+    type: "interactive",
+    interactive: {
+      type: "button",
+      body: { text: bodyText },
+      action: {
+        buttons: buttons.map((b) => ({
+          type: "reply",
+          reply: { id: b.id, title: b.title },
+        })),
       },
     },
-    {
-      headers: getHeaders(),
-    },
-  );
+  });
 }
 
 export async function sendListMessage(
@@ -62,32 +60,24 @@ export async function sendListMessage(
   buttonLabel: string,
   rows: Array<{ id: string; title: string; description?: string }>,
 ) {
-  await axios.post(
-    `${BASE_URL}/${phoneNumberId}/messages`,
-    {
-      type: "interactive",
-      to: to,
-      messaging_product: "whatsapp",
-      interactive: {
-        type: "list",
-        body: { text: bodyText },
-        action: {
-          button: buttonLabel,
-          sections: [
-            {
-              title: "Opciones",
-              rows: rows.map((r) => ({
-                id: r.id,
-                title: r.title,
-                description: r.description,
-              })),
-            },
-          ],
-        },
+  await send(phoneNumberId, to, {
+    type: "interactive",
+    interactive: {
+      type: "list",
+      body: { text: bodyText },
+      action: {
+        button: buttonLabel,
+        sections: [
+          {
+            title: "Opciones",
+            rows: rows.map((r) => ({
+              id: r.id,
+              title: r.title,
+              description: r.description,
+            })),
+          },
+        ],
       },
     },
-    {
-      headers: getHeaders(),
-    },
-  );
+  });
 }
