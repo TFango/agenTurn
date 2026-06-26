@@ -57,13 +57,16 @@ export async function handleCancelSelect(
     conv.client_whatsapp,
     "¿Cuál turno querés cancelar?",
     "Ver turnos",
-    turns.map((t) => {
-      const dt = new Date(t.datetime);
-      return {
-        id: t.id,
-        title: (t as any).service?.name ?? "Turno",
-        description: `${dt.getDate()}/${dt.getMonth() + 1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2, "0")}hs`,
-      };
-    }),
+    [
+      ...turns.map((t) => {
+        const dt = new Date(t.datetime);
+        return {
+          id: t.id,
+          title: (t as any).service?.name ?? "Turno",
+          description: `${dt.getDate()}/${dt.getMonth() + 1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2, "0")}hs`,
+        };
+      }),
+      { id: "back_to_menu", title: "← Volver al menú" },
+    ],
   );
 }

@@ -46,9 +46,12 @@ export async function handleSelectCategory(
     conv.client_whatsapp,
     "¿Qué tipo de servicio estás buscando?",
     "Ver opciones",
-    categories.map((c) => ({
-      id: c.id,
-      title: c.name,
-    })),
+    [
+      ...categories.map((c) => ({
+        id: c.id,
+        title: c.name,
+      })),
+      { id: "back_to_menu", title: "← Volver al menú" },
+    ],
   );
 }

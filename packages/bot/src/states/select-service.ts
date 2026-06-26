@@ -40,10 +40,13 @@ export async function handleSelectService(
     conv.client_whatsapp,
     "¿Qué servicio querés reservar?",
     "Ver servicios",
-    services.map((s) => ({
-      id: s.id,
-      title: s.name,
-      description: `${s.duration_minutes} min - $${s.price}`,
-    })),
+    [
+      ...services.map((s) => ({
+        id: s.id,
+        title: s.name,
+        description: `${s.duration_minutes} min - $${s.price}`,
+      })),
+      { id: "back_to_menu", title: "← Volver al menú" },
+    ],
   );
 }

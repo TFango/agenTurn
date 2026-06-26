@@ -10,6 +10,11 @@ interface DaysBlocked {
   reason: string;
 }
 
+interface Professional {
+  id: string;
+  name: string;
+}
+
 function formatDate(dateStr: string) {
   const [y, m, d] = dateStr.split("-").map(Number);
   const date = new Date(y, m - 1, d);
@@ -22,16 +27,38 @@ function formatDate(dateStr: string) {
 
 export default function DiasBloqueadosPage() {
   const [blocked, setBlocked] = useState<DaysBlocked[]>([]);
+  const [professionals, setProfessionals] = useState<Professional[]>([]);
+  const [selectedProfId, setSelectedProfId] = useState<string>("");
   const [date, setDate] = useState("");
   const [reason, setReason] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("/api/blockedDates")
-      .then((r) => r.json())
-      .then(setBlocked);
+    async function load() {
+      const [profsRes, blockedRes] = await Promise.all([
+        fetch("/api/professionals").then((r) => r.json()),
+        fetch("/api/blockedDates").then((r) => r.json()),
+      ]);
+      setProfessionals(profsRes);
+      if (profsRes.length > 0) {
+        setSelectedProfId(profsRes[0].id);
+      }
+      setBlocked(blockedRes);
+    }
+    load();
   }, []);
+
+  async function loadBlocked(profId: string) {
+    const res = await fetch(`/api/blockedDates?professionalId=${profId}`);
+    const data = await res.json();
+    setBlocked(data);
+  }
+
+  function handleProfessionalChange(profId: string) {
+    setSelectedProfId(profId);
+    loadBlocked(profId);
+  }
 
   async function handleAdd(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,12 +75,14 @@ export default function DiasBloqueadosPage() {
     await fetch("/api/blockedDates", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date, reason: reason || "" }),
+      body: JSON.stringify({
+        date,
+        reason: reason || "",
+        professionalId: selectedProfId || undefined,
+      }),
     });
 
-    const res = await fetch("/api/blockedDates");
-    const data = await res.json();
-    setBlocked(data);
+    await loadBlocked(selectedProfId);
     setDate("");
     setReason("");
     setLoading(false);
@@ -80,6 +109,21 @@ export default function DiasBloqueadosPage() {
       </header>
 
       <div className={styles.content}>
+
+        {professionals.length > 1 && (
+          <div className={styles.profSelector}>
+            <label className={styles.profLabel}>PROFESIONAL</label>
+            <select
+              className={styles.profSelect}
+              value={selectedProfId}
+              onChange={(e) => handleProfessionalChange(e.target.value)}
+            >
+              {professionals.map((p) => (
+                <option key={p.id} value={p.id}>{p.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Formulario */}
         <div className={styles.formCard}>

@@ -58,9 +58,12 @@ export async function handleSelectProfessional(
     conv.client_whatsapp,
     "¿Con quién querés atenderte?",
     "Ver profesionales",
-    professionals.map((p) => ({
-      id: p.id,
-      title: p.name,
-    })),
+    [
+      ...professionals.map((p) => ({
+        id: p.id,
+        title: p.name,
+      })),
+      { id: "back_to_menu", title: "← Volver al menú" },
+    ],
   );
 }

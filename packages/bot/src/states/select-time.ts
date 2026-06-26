@@ -42,10 +42,13 @@ export async function handleSelectTime(
     conv.client_whatsapp,
     `¿A qué hora? (${selected_date})`,
     "Ver horarios",
-    slots.slice(0, 10).map((s) => ({
-      id: s.start,
-      title: s.start,
-      description: `Termina ${s.end}`,
-    })),
+    [
+      ...slots.slice(0, 9).map((s) => ({
+        id: s.start,
+        title: s.start,
+        description: `Termina ${s.end}`,
+      })),
+      { id: "back_to_menu", title: "← Volver al menú" },
+    ],
   );
 }

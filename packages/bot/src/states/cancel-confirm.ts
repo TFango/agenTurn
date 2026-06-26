@@ -59,6 +59,7 @@ export async function handleCancelConfirm(
     [
       { id: "yes", title: "✅ Sí, cancelar" },
       { id: "no", title: "↩️ No, mantener" },
+      { id: "back_to_menu", title: "← Volver al menú" },
     ],
   );
 }

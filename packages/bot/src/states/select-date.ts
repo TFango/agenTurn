@@ -75,7 +75,10 @@ export async function handleSelectDate(
     conv.client_whatsapp,
     "¿Qué día preferís?",
     "Ver días",
-    availableDays.slice(0, 10).map((d) => ({ id: d, title: formatDateAR(d) })),
+    [
+      ...availableDays.slice(0, 9).map((d) => ({ id: d, title: formatDateAR(d) })),
+      { id: "back_to_menu", title: "← Volver al menú" },
+    ],
   );
 }
 

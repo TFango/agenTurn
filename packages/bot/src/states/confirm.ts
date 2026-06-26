@@ -42,6 +42,7 @@ export async function handleConfirm(
     [
       { id: "confirm_yes", title: "✅ Sí, confirmar" },
       { id: "confirm_change", title: "✏️ Cambiar algo" },
+      { id: "back_to_menu", title: "← Volver al menú" },
     ],
   );
 }

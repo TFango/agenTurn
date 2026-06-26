@@ -10,20 +10,27 @@ export async function GET(req: NextRequest) {
   }
 
   const tenantId = await getTenantId(session);
+  const { searchParams } = new URL(req.url);
+  const professionalId = searchParams.get("professionalId");
 
-  const professional = await Professional.findOne({
-    where: { tenant_id: tenantId },
-  });
+  let profId: string | undefined = professionalId ?? undefined;
 
-  if (!professional) {
+  if (!profId) {
+    const professional = await Professional.findOne({
+      where: { tenant_id: tenantId },
+    });
+    profId = professional?.id;
+  }
+
+  if (!profId) {
     return NextResponse.json(
-      { message: "El profesional no existe" },
+      { message: "No se encontro el profesional" },
       { status: 404 },
     );
   }
 
   const daysBlocked = await BlockedDate.findAll({
-    where: { professional_id: professional.id },
+    where: { professional_id: profId },
   });
 
   return NextResponse.json(daysBlocked);
@@ -37,25 +44,27 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { date, reason } = body;
+  const { date, reason, professionalId } = body;
 
   if (!date) {
     return NextResponse.json(
-      {
-        message: "La fecha es obligatoria",
-      },
-      {
-        status: 400,
-      },
+      { message: "La fecha es obligatoria" },
+      { status: 400 },
     );
   }
+
   const tenantId = await getTenantId(session);
 
-  const profesional = await Professional.findOne({
-    where: { tenant_id: tenantId },
-  });
+  let profId: string | undefined = professionalId;
 
-  if (!profesional) {
+  if (!profId) {
+    const profesional = await Professional.findOne({
+      where: { tenant_id: tenantId },
+    });
+    profId = profesional?.id;
+  }
+
+  if (!profId) {
     return NextResponse.json(
       { message: "No se encontro el profesional" },
       { status: 404 },
@@ -63,10 +72,10 @@ export async function POST(req: NextRequest) {
   }
 
   await BlockedDate.create({
-    professional_id: profesional.id,
+    professional_id: profId,
     date,
     reason,
   });
 
-  return NextResponse.json({ OK: true });
+  return NextResponse.json({ ok: true });
 }
