@@ -7,13 +7,11 @@ describe("getAvailableSlots", () => {
     const existingAppointments = [];
     const serviceDurationMinutes = 30;
     const slotIntervalMinutes = 30;
-    const date = "2026-05-10";
     const resultado = getAvailableSlots(
       workingHours,
       existingAppointments,
       serviceDurationMinutes,
       slotIntervalMinutes,
-      date,
     );
 
     expect(resultado[0]).toEqual({ start: "09:00", end: "09:30" });
@@ -22,7 +20,8 @@ describe("getAvailableSlots", () => {
   it("excluye slots que se solapan con turnos existentes", () => {
     const existingAppointments = [
       {
-        datetime: new Date("2026-05-10T10:00:00"),
+        startHour: 10,
+        startMinute: 0,
         duration_minutes: 60,
       },
     ];
@@ -31,7 +30,6 @@ describe("getAvailableSlots", () => {
       existingAppointments,
       30,
       30,
-      "2026-05-10",
     );
 
     expect(resultado).not.toContainEqual({ start: "10:00", end: "10:30" });

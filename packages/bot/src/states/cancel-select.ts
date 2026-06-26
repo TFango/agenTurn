@@ -7,6 +7,7 @@ import {
 } from "@agenturn/db";
 import { sendListMessage, sendTextMessage } from "../whatsapp/whatsapp";
 import { Op } from "sequelize";
+import { nowAR, formatDateTimeAR } from "../utils/date";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -23,7 +24,7 @@ export async function handleCancelSelect(
       tenant_id: tenant.id,
       client_id: client.id,
       status: "confirmed",
-      datetime: { [Op.gte]: new Date() },
+      datetime: { [Op.gte]: nowAR() },
     },
     include: [{ model: Service, as: "service" }],
     order: [["datetime", "ASC"]],
@@ -59,11 +60,10 @@ export async function handleCancelSelect(
     "Ver turnos",
     [
       ...turns.map((t) => {
-        const dt = new Date(t.datetime);
         return {
           id: t.id,
           title: (t as any).service?.name ?? "Turno",
-          description: `${dt.getDate()}/${dt.getMonth() + 1} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2, "0")}hs`,
+          description: formatDateTimeAR(new Date(t.datetime)),
         };
       }),
       { id: "back_to_menu", title: "← Volver al menú" },

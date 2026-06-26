@@ -15,6 +15,6 @@ export { ServiceCategory } from "./models/core/ServiceCategory";
 export { ProfessionalCategory } from "./models/core/ProfessionalCategory";
 
 export { getAvailableSlots } from "./scheduling";
-export type { WorkingHoursRange, TimeSlot } from "./scheduling";
+export type { WorkingHoursRange, TimeSlot, ExistingAppointment } from "./scheduling";
 
 import "./models/associations";

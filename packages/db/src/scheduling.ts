@@ -23,12 +23,17 @@ function minutesToTime(minutes: number): string {
   return `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}`;
 }
 
+export type ExistingAppointment = {
+  startHour: number;
+  startMinute: number;
+  duration_minutes: number;
+};
+
 export function getAvailableSlots(
   workingHours: WorkingHoursRange,
-  existingAppointments: any[],
+  existingAppointments: ExistingAppointment[],
   serviceDurationMinutes: number,
   slotIntervalMinutes: number,
-  date: string,
 ): TimeSlot[] {
   const { start_time, end_time } = workingHours;
 
@@ -54,8 +59,7 @@ export function getAvailableSlots(
     const slotEnd = timeToMinutes(slot.end);
 
     return !existingAppointments.some((appt) => {
-      const apptStart =
-        appt.datetime.getHours() * 60 + appt.datetime.getMinutes();
+      const apptStart = appt.startHour * 60 + appt.startMinute;
       const apptEnd = apptStart + appt.duration_minutes;
 
       return slotStart < apptEnd && slotEnd > apptStart;

@@ -9,6 +9,7 @@ import {
   getAvailableSlots,
 } from "@agenturn/db";
 import { sendListMessage, sendTextMessage } from "../whatsapp/whatsapp";
+import { todayAR, getHoursAR, getMinutesAR } from "../utils/date";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -116,17 +117,20 @@ export async function getSlotsForDate(
       const dt = new Date(a.datetime);
       return dt >= dateStart && dt <= dateEnd;
     })
-    .map((a) => ({
-      datetime: new Date(a.datetime),
-      duration_minutes: (a as any).service.duration_minutes,
-    }));
+    .map((a) => {
+      const dt = new Date(a.datetime);
+      return {
+        startHour: getHoursAR(dt),
+        startMinute: getMinutesAR(dt),
+        duration_minutes: (a as any).service.duration_minutes,
+      };
+    });
 
   return getAvailableSlots(
     { start_time: wh.start_time, end_time: wh.end_time },
     dayAppointments,
     serviceDuration,
     slotInterval,
-    date,
   );
 }
 
@@ -137,12 +141,12 @@ async function getAvailableDays(
   slotInterval: number,
 ): Promise<string[]> {
   const available: string[] = [];
-  const today = new Date();
+  const todayStr = todayAR();
+  const [y, m, d2] = todayStr.split("-").map(Number);
 
   for (let i = 1; i <= 14; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    const dateStr = d.toISOString().split("T")[0];
+    const d = new Date(y, m - 1, d2 + i);
+    const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
     const slots = await getSlotsForDate(
       professionalId,
       dateStr,
