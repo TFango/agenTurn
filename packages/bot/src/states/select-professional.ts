@@ -1,5 +1,5 @@
 import { ConversationState, Tenant, Client, Professional, ServiceCategory } from "@agenturn/db";
-import { sendListMessage } from "../whatsapp/whatsapp";
+import { sendListMessage, sendTextMessage } from "../whatsapp/whatsapp";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -23,6 +23,16 @@ export async function handleSelectProfessional(
     }
   } else {
     professionals = await Professional.findAll({ where: { tenant_id: tenant.id, active: true } });
+  }
+
+  if (professionals.length === 0) {
+    await sendTextMessage(
+      tenant.phone_number_id,
+      conv.client_whatsapp,
+      "No hay profesionales disponibles en este momento. Volvé a intentar más tarde.\n\nEscribí *turno* para volver al menú.",
+    );
+    await conv.update({ state: "greeting", temp_data: {} });
+    return;
   }
 
   const selected = professionals.find((s) => s.id === body);

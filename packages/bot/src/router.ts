@@ -2,7 +2,7 @@ import { ConversationState, Tenant } from "@agenturn/db";
 import { findOrCreateClient } from "./client-lookup";
 import { dispatchState } from "./state-machine";
 
-const RESET_KEYWORDS = ["cancelar", "salir", "menu", "menú"];
+const RESET_KEYWORDS = ["cancelar", "salir", "menu", "menú", "turno"];
 
 export async function routeMessage(
   from: string,
