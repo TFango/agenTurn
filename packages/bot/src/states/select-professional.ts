@@ -69,7 +69,7 @@ export async function handleSelectProfessional(
     "¿Con quién querés atenderte?",
     "Ver profesionales",
     [
-      ...professionals.map((p) => ({
+      ...professionals.slice(0, 9).map((p) => ({
         id: p.id,
         title: p.name,
       })),

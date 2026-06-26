@@ -41,7 +41,7 @@ export async function handleSelectService(
     "¿Qué servicio querés reservar?",
     "Ver servicios",
     [
-      ...services.map((s) => ({
+      ...services.slice(0, 9).map((s) => ({
         id: s.id,
         title: s.name,
         description: `${s.duration_minutes} min - $${s.price}`,

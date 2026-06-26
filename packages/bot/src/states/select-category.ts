@@ -47,7 +47,7 @@ export async function handleSelectCategory(
     "¿Qué tipo de servicio estás buscando?",
     "Ver opciones",
     [
-      ...categories.map((c) => ({
+      ...categories.slice(0, 9).map((c) => ({
         id: c.id,
         title: c.name,
       })),

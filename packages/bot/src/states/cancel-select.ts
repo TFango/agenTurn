@@ -59,7 +59,7 @@ export async function handleCancelSelect(
     "¿Cuál turno querés cancelar?",
     "Ver turnos",
     [
-      ...turns.map((t) => {
+      ...turns.slice(0, 9).map((t) => {
         return {
           id: t.id,
           title: (t as any).service?.name ?? "Turno",
