@@ -9,6 +9,7 @@ import {
   getAvailableSlots,
 } from "@agenturn/db";
 import { sendListMessage, sendTextMessage } from "../whatsapp/whatsapp";
+import { Op } from "sequelize";
 import { todayAR, getHoursAR, getMinutesAR } from "../utils/date";
 
 type ConversationI = InstanceType<typeof ConversationState>;
@@ -108,23 +109,22 @@ export async function getSlotsForDate(
   const dateStart = new Date(`${date}T00:00:00`);
   const dateEnd = new Date(`${date}T23:59:59`);
   const appointments = await Appointment.findAll({
-    where: { professional_id: professionalId, status: "confirmed" },
+    where: {
+      professional_id: professionalId,
+      status: "confirmed",
+      datetime: { [Op.gte]: dateStart, [Op.lte]: dateEnd },
+    },
     include: [{ model: Service, as: "service" }],
   });
 
-  const dayAppointments = appointments
-    .filter((a) => {
-      const dt = new Date(a.datetime);
-      return dt >= dateStart && dt <= dateEnd;
-    })
-    .map((a) => {
-      const dt = new Date(a.datetime);
-      return {
-        startHour: getHoursAR(dt),
-        startMinute: getMinutesAR(dt),
-        duration_minutes: (a as any).service.duration_minutes,
-      };
-    });
+  const dayAppointments = appointments.map((a) => {
+    const dt = new Date(a.datetime);
+    return {
+      startHour: getHoursAR(dt),
+      startMinute: getMinutesAR(dt),
+      duration_minutes: (a as any).service.duration_minutes,
+    };
+  });
 
   return getAvailableSlots(
     { start_time: wh.start_time, end_time: wh.end_time },
