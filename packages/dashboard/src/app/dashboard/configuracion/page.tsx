@@ -78,15 +78,11 @@ function usePushNotifications() {
   return { status, loading, subscribe, unsubscribe };
 }
 
-interface Tenant {
-  name: string;
-  plan: string;
-}
-
-interface Counts {
-  horarios: number;
-  profesionales: number;
-  bloqueados: number;
+interface ConfigSummary {
+  tenant: { name: string; plan: string } | null;
+  workingHoursDays: number;
+  activeProfessionals: number;
+  blockedDates: number;
 }
 
 const ChevronRight = () => (
@@ -97,31 +93,19 @@ const ChevronRight = () => (
 
 export default function ConfiguracionPage() {
   const { data: session } = useSession();
-  const [tenant, setTenant] = useState<Tenant | null>(null);
-  const [counts, setCounts] = useState<Counts>({ horarios: 0, profesionales: 0, bloqueados: 0 });
+  const [summary, setSummary] = useState<ConfigSummary | null>(null);
 
   useEffect(() => {
-    const safeFetch = (url: string) => fetch(url).then(r => r.ok ? r.json() : null);
-    Promise.all([
-      safeFetch('/api/tenant'),
-      safeFetch('/api/workingHours'),
-      safeFetch('/api/professionals'),
-      safeFetch('/api/blockedDates'),
-    ]).then(([tenantData, horariosData, profesionalesData, bloqueadosData]) => {
-      if (tenantData) setTenant(tenantData);
-      setCounts({
-        horarios: horariosData?.workingHours?.length ?? 0,
-        profesionales: profesionalesData?.filter((p: any) => p.active)?.length ?? 0,
-        bloqueados: bloqueadosData?.length ?? 0,
-      });
-    });
+    fetch('/api/config-summary')
+      .then(r => r.ok ? r.json() : null)
+      .then(setSummary);
   }, []);
 
   const OPCIONES = [
     {
       id: 'horarios',
       label: 'Horarios de atención',
-      sub: counts.horarios === 0 ? 'Sin días activos' : `${counts.horarios} día${counts.horarios !== 1 ? 's' : ''} activo${counts.horarios !== 1 ? 's' : ''}`,
+      sub: !summary?.workingHoursDays ? 'Sin días activos' : `${summary.workingHoursDays} día${summary.workingHoursDays !== 1 ? 's' : ''} activo${summary.workingHoursDays !== 1 ? 's' : ''}`,
       href: '/dashboard/configuracion/horarios',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -133,7 +117,7 @@ export default function ConfiguracionPage() {
     {
       id: 'profesionales',
       label: 'Profesionales',
-      sub: counts.profesionales === 0 ? 'Sin profesionales' : `${counts.profesionales} activa${counts.profesionales !== 1 ? 's' : ''}`,
+      sub: !summary?.activeProfessionals ? 'Sin profesionales' : `${summary.activeProfessionals} activa${summary.activeProfessionals !== 1 ? 's' : ''}`,
       href: '/dashboard/configuracion/profesionales',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -147,7 +131,7 @@ export default function ConfiguracionPage() {
     {
       id: 'bloqueados',
       label: 'Días bloqueados',
-      sub: counts.bloqueados === 0 ? 'Sin días bloqueados' : `${counts.bloqueados} día${counts.bloqueados !== 1 ? 's' : ''}`,
+      sub: !summary?.blockedDates ? 'Sin días bloqueados' : `${summary.blockedDates} día${summary.blockedDates !== 1 ? 's' : ''}`,
       href: '/dashboard/configuracion/diasBloqueados',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
@@ -180,7 +164,7 @@ export default function ConfiguracionPage() {
 
       <header className={styles.header}>
         <div>
-          <p className={styles.headerSub}>{tenant?.name?.toUpperCase() ?? '—'}</p>
+          <p className={styles.headerSub}>{summary?.tenant?.name?.toUpperCase() ?? '—'}</p>
           <h1 className={styles.headerTitle}>Ajustes</h1>
         </div>
         <NotificationBell />
@@ -192,7 +176,7 @@ export default function ConfiguracionPage() {
           <div className={styles.profileAvatar}>{userInitial}</div>
           <div className={styles.profileInfo}>
             <p className={styles.profileName}>{userName}</p>
-            <p className={styles.profileSub}>{tenant ? `${tenant.name} · Plan ${tenant.plan === 'pro' ? 'Pro' : 'Free'}` : '—'}</p>
+            <p className={styles.profileSub}>{summary?.tenant ? `${summary.tenant.name} · Plan ${summary.tenant.plan === 'pro' ? 'Pro' : 'Free'}` : '—'}</p>
           </div>
           <span className={styles.chevron}><ChevronRight /></span>
         </Link>

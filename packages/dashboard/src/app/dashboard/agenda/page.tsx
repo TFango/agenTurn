@@ -68,14 +68,10 @@ export default function AgendaPage() {
 
   async function openModal() {
     if (professionals.length === 0) {
-      const [profs, servs, clis] = await Promise.all([
-        fetch("/api/professionals").then((r) => r.json()),
-        fetch("/api/services").then((r) => r.json()),
-        fetch("/api/clients").then((r) => r.json()),
-      ]);
-      setProfessionals(profs);
-      setServices(servs);
-      setClients(clis);
+      const data = await fetch("/api/agenda/form-data").then((r) => r.json());
+      setProfessionals(data.professionals);
+      setServices(data.services);
+      setClients(data.clients);
     }
 
     setModalOpen(true);

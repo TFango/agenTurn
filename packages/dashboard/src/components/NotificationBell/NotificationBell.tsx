@@ -1,16 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useNotifications } from "@/components/NotificationProvider/NotificationProvider";
+import { useState } from "react";
 import styles from "./NotificationBell.module.css";
-
-interface Notification {
-  id: string;
-  type: string;
-  title: string;
-  body: string;
-  read: boolean;
-  created_at: string;
-}
 
 function timeAgo(dateStr: string): string {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -31,33 +23,8 @@ function typeIcon(type: string): string {
 }
 
 export default function NotificationBell() {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const { notifications, unreadCount, markAsRead, markAllAsRead, deleteNotification } = useNotifications();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    fetch("/api/notifications")
-      .then((r) => (r.ok ? r.json() : []))
-      .then(setNotifications);
-  }, []);
-
-  const unreadCount = notifications.filter((n) => !n.read).length;
-
-  async function markAsRead(id: string) {
-    await fetch(`/api/notifications/${id}`, { method: "PATCH" });
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, read: true } : n)),
-    );
-  }
-
-  async function markAllAsRead() {
-    await fetch("/api/notifications", { method: "PATCH" });
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  }
-
-  async function deleteNotification(id: string) {
-    await fetch(`/api/notifications/${id}`, { method: "DELETE" });
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-  }
 
   return (
     <div className={styles.wrapper}>

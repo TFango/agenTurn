@@ -27,6 +27,10 @@ self.addEventListener("push", (event) => {
       icon: "/icon-192x192.png",
     }),
   );
+
+  const channel = new BroadcastChannel("notifications");
+  channel.postMessage(data);
+  channel.close();
 });
 
 self.addEventListener("notificationclick", (event) => {
