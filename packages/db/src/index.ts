@@ -13,8 +13,13 @@ export { WaitList } from "./models/client/Waitlist";
 export { Notification } from "./models/core/Notification";
 export { ServiceCategory } from "./models/core/ServiceCategory";
 export { ProfessionalCategory } from "./models/core/ProfessionalCategory";
+export { PushSubscription } from "./models/core/PushSubscription";
 
 export { getAvailableSlots } from "./scheduling";
-export type { WorkingHoursRange, TimeSlot, ExistingAppointment } from "./scheduling";
+export type {
+  WorkingHoursRange,
+  TimeSlot,
+  ExistingAppointment,
+} from "./scheduling";
 
 import "./models/associations";

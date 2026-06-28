@@ -1,5 +1,6 @@
 import { ConversationState, Tenant, Client, Notification } from "@agenturn/db";
 import { sendTextMessage } from "../whatsapp/whatsapp";
+import { sendPushToTenant } from "../push/push";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -24,6 +25,8 @@ export async function handleHumanHandoff(
       body: `${client.name} quiere hablar con alguien`,
       tenant_id: tenant.id,
     });
+
+    await sendPushToTenant(tenant.id, "Atención requerida", `${client.name} quiere hablar con alguien`);
     await sendTextMessage(
       tenant.phone_number_id,
       conv.client_whatsapp,

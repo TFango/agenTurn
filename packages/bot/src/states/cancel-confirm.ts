@@ -6,6 +6,7 @@ import {
   Notification,
 } from "@agenturn/db";
 import { sendButtonMessage, sendTextMessage } from "../whatsapp/whatsapp";
+import { sendPushToTenant } from "../push/push";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -31,6 +32,8 @@ export async function handleCancelConfirm(
       body: `${client.name} cancelo su turno`,
       tenant_id: tenant.id,
     });
+
+    await sendPushToTenant(tenant.id, "Turno cancelado", `${client.name} canceló su turno`);
 
     await conv.update({ state: "greeting" });
 

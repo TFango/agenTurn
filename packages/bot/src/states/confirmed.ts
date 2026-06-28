@@ -7,6 +7,7 @@ import {
 } from "@agenturn/db";
 import { sendTextMessage } from "../whatsapp/whatsapp";
 import { getSlotsForDate } from "./select-date";
+import { sendPushToTenant } from "../push/push";
 
 type ConversationI = InstanceType<typeof ConversationState>;
 type TenantI = InstanceType<typeof Tenant>;
@@ -62,6 +63,8 @@ export async function handleConfirmed(
     title: "Nuevo turno",
     body: `${client.name} saco turno para ${service_name} a las ${selected_time}`,
   });
+
+  await sendPushToTenant(tenant.id, "Nuevo turno", `${client.name} sacó turno para ${service_name} a las ${selected_time}`);
 
   await sendTextMessage(
     tenant.phone_number_id,
