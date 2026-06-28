@@ -55,25 +55,45 @@ export async function POST(req: NextRequest) {
 
   const service = await Service.findByPk(service_id);
   if (!service) {
-    return NextResponse.json({ error: "Servicio no encontrado" }, { status: 404 });
+    return NextResponse.json(
+      { error: "Servicio no encontrado" },
+      { status: 404 },
+    );
   }
 
   const newStart = new Date(datetime);
-  const newEnd = new Date(newStart.getTime() + service.duration_minutes * 60 * 1000);
+  const newEnd = new Date(
+    newStart.getTime() + service.duration_minutes * 60 * 1000,
+  );
+
+  const dayStart = new Date(datetime);
+  dayStart.setHours(0, 0, 0, 0);
+
+  const dayEnd = new Date(datetime);
+  dayEnd.setHours(23, 59, 59, 999);
 
   const existing = await Appointment.findAll({
-    where: { professional_id, status: "confirmed" },
+    where: {
+      professional_id,
+      status: "confirmed",
+      datetime: { [Op.between]: [dayStart, dayEnd] },
+    },
     include: [{ model: Service, as: "service" }],
   });
 
   const conflict = existing.some((a) => {
     const aStart = new Date(a.datetime);
-    const aEnd = new Date(aStart.getTime() + (a as any).service.duration_minutes * 60 * 1000);
+    const aEnd = new Date(
+      aStart.getTime() + (a as any).service.duration_minutes * 60 * 1000,
+    );
     return newStart < aEnd && newEnd > aStart;
   });
 
   if (conflict) {
-    return NextResponse.json({ error: "Ese horario ya está ocupado" }, { status: 409 });
+    return NextResponse.json(
+      { error: "Ese horario ya está ocupado" },
+      { status: 409 },
+    );
   }
 
   const created = await Appointment.create({

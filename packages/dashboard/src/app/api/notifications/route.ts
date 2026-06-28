@@ -13,7 +13,8 @@ export async function GET(req: NextRequest) {
 
   const notifications = await Notification.findAll({
     where: { tenant_id: tenantId },
-    order: [["created_at", "DESC"]]
+    order: [["created_at", "DESC"]],
+    limit: 30,
   });
 
   return NextResponse.json(notifications);

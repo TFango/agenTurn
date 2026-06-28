@@ -1,4 +1,4 @@
-import { getSessionOrUnauthorized } from "@/lib/session";
+import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
 import { Professional } from "@agenturn/db";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -12,15 +12,21 @@ export async function PUT(
     return error;
   }
 
+  const tenantId = await getTenantId(session);
   const body = await req.json();
   const { id } = await params;
 
   const { name, active, categoryIds } = body;
 
-  await Professional.update({ name, active }, { where: { id } });
+  await Professional.update(
+    { name, active },
+    { where: { id, tenant_id: tenantId } },
+  );
 
   if (categoryIds) {
-    const professional = await Professional.findByPk(id);
+    const professional = await Professional.findOne({
+      where: { id, tenant_id: tenantId },
+    });
     await (professional as any).setServiceCategories(categoryIds);
   }
 
@@ -37,9 +43,10 @@ export async function DELETE(
     return error;
   }
 
+  const tenantId = await getTenantId(session);
   const { id } = await params;
 
-  await Professional.destroy({ where: { id } });
+  await Professional.destroy({ where: { id, tenant_id: tenantId } });
 
   return NextResponse.json({ ok: true });
 }

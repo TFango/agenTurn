@@ -1,5 +1,5 @@
-import { getSessionOrUnauthorized } from "@/lib/session";
-import { BlockedDate } from "@agenturn/db";
+import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
+import { BlockedDate, Professional } from "@agenturn/db";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(
@@ -12,9 +12,31 @@ export async function DELETE(
     return error;
   }
 
+  const tenantId = await getTenantId(session);
   const { id } = await params;
 
-  await BlockedDate.destroy({ where: { id: id } });
+  const blockDate = await BlockedDate.findOne({
+    where: { id },
+    include: [{ model: Professional, as: "professional" }],
+  });
+
+  if (!blockDate) {
+    return NextResponse.json(
+      { message: "El blockedDate no existe" },
+      { status: 404 },
+    );
+  }
+
+  if ((blockDate as any).professional.tenant_id !== tenantId) {
+    return NextResponse.json(
+      {
+        message: "Este blockedDate no pertenece al usuario",
+      },
+      { status: 404 },
+    );
+  }
+
+  await blockDate.destroy();
 
   return NextResponse.json({ ok: true });
 }
