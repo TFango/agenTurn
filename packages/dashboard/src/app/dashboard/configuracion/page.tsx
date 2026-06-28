@@ -6,6 +6,78 @@ import Link from 'next/link';
 import styles from './configuracion.module.css';
 import NotificationBell from "@/components/NotificationBell/NotificationBell";
 
+type PushStatus = 'loading' | 'unsupported' | 'denied' | 'active' | 'inactive';
+
+function usePushNotifications() {
+  const [status, setStatus] = useState<PushStatus>('loading');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!('PushManager' in window) || !('serviceWorker' in navigator)) {
+      setStatus('unsupported');
+      return;
+    }
+    if (Notification.permission === 'denied') {
+      setStatus('denied');
+      return;
+    }
+    navigator.serviceWorker.ready.then(async (reg) => {
+      const sub = await reg.pushManager.getSubscription();
+      setStatus(sub ? 'active' : 'inactive');
+    });
+  }, []);
+
+  async function subscribe() {
+    setLoading(true);
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') {
+        setStatus('denied');
+        setLoading(false);
+        return;
+      }
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+      });
+      const { endpoint, keys } = sub.toJSON() as { endpoint: string; keys: { p256dh: string; auth: string } };
+      await fetch('/api/push-subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ endpoint, keys }),
+      });
+      setStatus('active');
+    } catch {
+      setStatus('inactive');
+    }
+    setLoading(false);
+  }
+
+  async function unsubscribe() {
+    setLoading(true);
+    try {
+      const reg = await navigator.serviceWorker.ready;
+      const sub = await reg.pushManager.getSubscription();
+      if (sub) {
+        const { endpoint } = sub.toJSON() as { endpoint: string };
+        await fetch('/api/push-subscriptions', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ endpoint }),
+        });
+        await sub.unsubscribe();
+      }
+      setStatus('inactive');
+    } catch {
+      setStatus('inactive');
+    }
+    setLoading(false);
+  }
+
+  return { status, loading, subscribe, unsubscribe };
+}
+
 interface Tenant {
   name: string;
   plan: string;
@@ -29,17 +101,18 @@ export default function ConfiguracionPage() {
   const [counts, setCounts] = useState<Counts>({ horarios: 0, profesionales: 0, bloqueados: 0 });
 
   useEffect(() => {
+    const safeFetch = (url: string) => fetch(url).then(r => r.ok ? r.json() : null);
     Promise.all([
-      fetch('/api/tenant').then(r => r.json()),
-      fetch('/api/workingHours').then(r => r.json()),
-      fetch('/api/professionals').then(r => r.json()),
-      fetch('/api/blockedDates').then(r => r.json()),
+      safeFetch('/api/tenant'),
+      safeFetch('/api/workingHours'),
+      safeFetch('/api/professionals'),
+      safeFetch('/api/blockedDates'),
     ]).then(([tenantData, horariosData, profesionalesData, bloqueadosData]) => {
-      setTenant(tenantData);
+      if (tenantData) setTenant(tenantData);
       setCounts({
-        horarios: horariosData.workingHours.length,
-        profesionales: profesionalesData.filter((p: any) => p.active).length,
-        bloqueados: bloqueadosData.length,
+        horarios: horariosData?.workingHours?.length ?? 0,
+        profesionales: profesionalesData?.filter((p: any) => p.active)?.length ?? 0,
+        bloqueados: bloqueadosData?.length ?? 0,
       });
     });
   }, []);
@@ -97,6 +170,8 @@ export default function ConfiguracionPage() {
     },
   ];
 
+  const { status: pushStatus, loading: pushLoading, subscribe, unsubscribe } = usePushNotifications();
+
   const userName = session?.user?.name ?? '—';
   const userInitial = userName.charAt(0).toUpperCase();
 
@@ -142,6 +217,38 @@ export default function ConfiguracionPage() {
               : <button key={op.id} className={styles.optionRow}>{inner}</button>;
           })}
         </div>
+
+        {pushStatus !== 'unsupported' && pushStatus !== 'loading' && (
+          <div className={styles.pushCard}>
+            <div className={styles.pushLeft}>
+              <div className={`${styles.pushIcon} ${pushStatus === 'active' ? styles.pushIconActive : ''}`}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                </svg>
+              </div>
+              <div className={styles.pushText}>
+                <p className={styles.pushTitle}>Notificaciones push</p>
+                <p className={styles.pushSub}>
+                  {pushStatus === 'active' && 'Activadas en este dispositivo'}
+                  {pushStatus === 'inactive' && 'Recibí alertas de turnos y mensajes'}
+                  {pushStatus === 'denied' && 'Bloqueadas por el navegador'}
+                </p>
+              </div>
+            </div>
+            {pushStatus === 'denied' ? (
+              <span className={styles.pushDeniedBadge}>Bloqueado</span>
+            ) : (
+              <button
+                className={`${styles.pushToggle} ${pushStatus === 'active' ? styles.pushToggleOn : ''}`}
+                onClick={pushStatus === 'active' ? unsubscribe : subscribe}
+                disabled={pushLoading}
+              >
+                <span className={styles.pushToggleThumb} />
+              </button>
+            )}
+          </div>
+        )}
 
         <button
           className={styles.signOutBtn}

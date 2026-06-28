@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   const professionals = await Professional.findAll({
     where: { tenant_id: tenantId },
-    include: { model: ServiceCategory },
+    include: { model: ServiceCategory, as: "serviceCategories" },
   });
 
   return NextResponse.json(professionals);

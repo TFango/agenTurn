@@ -8,7 +8,7 @@ const withSerwist = require('@serwist/next').default({
 const nextConfig = {
   reactCompiler: true,
   turbopack: {},
-  serverExternalPackages: ['sequelize', 'pg', 'pg-hstore', '@agenturn/db'],
+  serverExternalPackages: ['sequelize', 'pg', 'pg-hstore', '@agenturn/db', 'pg-protocol'],
 };
 
 module.exports = withSerwist(nextConfig);
