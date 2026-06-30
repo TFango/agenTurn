@@ -1,6 +1,7 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
+import { Pool } from "pg";
 
 // NextAuth() recibe la config y devuelve 4 herramientas que exportamos:
 // - handlers: los endpoints GET/POST que necesita NextAuth en /api/auth
@@ -20,39 +21,26 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Si retornás un objeto → login exitoso
       // Si retornás null o tirás un error → login fallido
       async authorize(credentials) {
-        const { User } = await import("@agenturn/db");
-
-        // Buscamos en la DB un usuario con ese email
-        const user = await User.findOne({
-          where: { email: credentials.email as string }, // "as string" porque NextAuth tipea credentials como unknown
-        });
-
-        // Si no existe ningún usuario con ese email, rechazamos
-        if (!user) {
-          throw new Error("No existe este usuario");
-        }
-
-        // bcrypt.compare() verifica si la contraseña que escribió el usuario
-        // coincide con el hash guardado en la DB. Retorna true o false.
-        const valid = await bcrypt.compare(
-          credentials.password as string,
-          user.password_hash,
+        const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
+        const { rows } = await pool.query(
+          "SELECT * FROM users WHERE email = $1 LIMIT 1",
+          [credentials.email as string]
         );
+        await pool.end();
 
-        // Si la contraseña no coincide, rechazamos
-        if (!valid) {
-          throw new Error("Contraseña incorrecta");
-        }
+        const user = rows[0];
+        if (!user) throw new Error("No existe este usuario");
 
-        // Si todo está bien, retornamos los datos del usuario.
-        // Estos datos van a viajar dentro del JWT (la cookie cifrada).
+        const valid = await bcrypt.compare(credentials.password as string, user.password_hash);
+        if (!valid) throw new Error("Contraseña incorrecta");
+
         return {
           id: user.id,
           name: user.name,
           email: user.email,
-          tenantId: user.tenant_id,       // qué local pertenece este usuario
-          role: user.role,                // "admin" o "professional"
-          professionalId: user.professional_id, // null si es admin
+          tenantId: user.tenant_id,
+          role: user.role,
+          professionalId: user.professional_id,
         };
       },
     }),
