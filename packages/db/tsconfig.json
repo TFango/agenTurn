@@ -5,7 +5,8 @@
     "esModuleInterop": true,
     "strict": true,
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "declaration": true
   },
   "include": ["src"],
   "exclude": ["src/seed.ts", "src/test"]
