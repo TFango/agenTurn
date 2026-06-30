@@ -19,11 +19,11 @@ export async function handleConfirm(
     return handleConfirmed(conv, tenant, client, body);
   }
   if (body === "confirm_change") {
-    await db.update(conversationStates).set({ state: "select_service", temp_data: {} }).where(eq(conversationStates.id, conv.id));
-    conv.state = "select_service";
+    await db.update(conversationStates).set({ state: "select_category", temp_data: {} }).where(eq(conversationStates.id, conv.id));
+    conv.state = "select_category";
     conv.temp_data = {};
-    const { handleSelectService } = await import("./select-service");
-    return handleSelectService(conv, tenant, client, body);
+    const { handleSelectCategory } = await import("./select-category");
+    return handleSelectCategory(conv, tenant, client, body);
   }
 
   await sendButtonMessage(
