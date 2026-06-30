@@ -1,3 +1,4 @@
+const { withSentryConfig } = require("@sentry/nextjs");
 const withSerwist = require("@serwist/next").default({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
@@ -23,4 +24,8 @@ const nextConfig = {
   ],
 };
 
-module.exports = withSerwist(nextConfig);
+module.exports = withSentryConfig(withSerwist(nextConfig), {
+  silent: true,
+  disableLogger: true,
+  telemetry: false,
+});
