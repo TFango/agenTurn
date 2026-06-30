@@ -7,7 +7,6 @@ const withSerwist = require("@serwist/next").default({
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactCompiler: true,
-  turbopack: {},
   serverExternalPackages: [
     "sequelize",
     "pg",
