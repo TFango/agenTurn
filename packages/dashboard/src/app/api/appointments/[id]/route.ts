@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { Appointment } from "@agenturn/db";
+import { db, appointments } from "@agenturn/db";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -16,18 +17,18 @@ export async function PATCH(
 
   const tenantId = await getTenantId(session);
 
-  const appointment = await Appointment.findOne({
-    where: { id, tenant_id: tenantId },
-  });
+  const result = await db
+    .update(appointments)
+    .set({ status: "cancelled" })
+    .where(and(eq(appointments.id, id), eq(appointments.tenant_id, tenantId)))
+    .returning();
 
-  if (!appointment) {
+  if (result.length === 0) {
     return NextResponse.json(
       { message: "Este turno no existe" },
       { status: 404 },
     );
   }
-
-  await appointment.update({ status: "cancelled" });
 
   return NextResponse.json({ ok: true });
 }

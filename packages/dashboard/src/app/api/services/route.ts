@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { Service } from "@agenturn/db";
+import { db, services } from "@agenturn/db";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -11,13 +12,12 @@ export async function GET(req: NextRequest) {
 
   const tenantId = await getTenantId(session);
 
-  const services = await Service.findAll({
-    where: {
-      tenant_id: tenantId,
-    },
-  });
+  const result = await db
+    .select()
+    .from(services)
+    .where(eq(services.tenant_id, tenantId));
 
-  return NextResponse.json(services);
+  return NextResponse.json(result);
 }
 
 export async function POST(req: NextRequest) {
@@ -39,14 +39,17 @@ export async function POST(req: NextRequest) {
 
   const tenantId = await getTenantId(session);
 
-  const service = await Service.create({
-    tenant_id: tenantId,
-    name,
-    duration_minutes: durationMinutes,
-    price,
-    active,
-    category_id,
-  });
+  const [service] = await db
+    .insert(services)
+    .values({
+      tenant_id: tenantId,
+      name,
+      duration_minutes: durationMinutes,
+      price,
+      active,
+      category_id,
+    })
+    .returning();
 
   return NextResponse.json(service, { status: 201 });
 }

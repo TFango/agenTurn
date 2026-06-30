@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { ServiceCategory } from "@agenturn/db";
+import { db, serviceCategories } from "@agenturn/db";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
@@ -17,12 +18,18 @@ export async function PUT(
   const body = await req.json();
   const { name } = body;
 
-  const [affectedRows] = await ServiceCategory.update(
-    { name },
-    { where: { id, tenant_id: tenantId } },
-  );
+  const result = await db
+    .update(serviceCategories)
+    .set({ name })
+    .where(
+      and(
+        eq(serviceCategories.id, id),
+        eq(serviceCategories.tenant_id, tenantId),
+      ),
+    )
+    .returning();
 
-  if (affectedRows === 0) {
+  if (result.length === 0) {
     return NextResponse.json(
       { message: "No se encontro la categoria a editar" },
       { status: 404 },
@@ -45,7 +52,14 @@ export async function DELETE(
   const tenantId = await getTenantId(session);
   const { id } = await params;
 
-  await ServiceCategory.destroy({ where: { tenant_id: tenantId, id } });
+  await db
+    .delete(serviceCategories)
+    .where(
+      and(
+        eq(serviceCategories.id, id),
+        eq(serviceCategories.tenant_id, tenantId),
+      ),
+    );
 
   return NextResponse.json({ ok: true });
 }

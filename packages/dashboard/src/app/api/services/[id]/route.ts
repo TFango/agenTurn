@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { Service } from "@agenturn/db";
+import { services, db } from "@agenturn/db";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PUT(
@@ -17,11 +18,13 @@ export async function PUT(
 
   const tenantId = await getTenantId(session);
 
-  const [affectedRows] = await Service.update(body, {
-    where: { id, tenant_id: tenantId },
-  });
+  const result = await db
+    .update(services)
+    .set(body)
+    .where(and(eq(services.id, id), eq(services.tenant_id, tenantId)))
+    .returning();
 
-  if (affectedRows === 0) {
+  if (result.length === 0) {
     return NextResponse.json({ error: "No encontrado" }, { status: 404 });
   }
 
@@ -42,12 +45,13 @@ export async function DELETE(
 
   const tenantId = await getTenantId(session);
 
-  const [affectedRows] = await Service.update(
-    { active: false },
-    { where: { id, tenant_id: tenantId } },
-  );
+  const result = await db
+    .update(services)
+    .set({ active: false })
+    .where(and(eq(services.id, id), eq(services.tenant_id, tenantId)))
+    .returning();
 
-  if (affectedRows === 0) {
+  if (result.length === 0) {
     return NextResponse.json(
       { error: "No se encontro el servicio" },
       { status: 404 },

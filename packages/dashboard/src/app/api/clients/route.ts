@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { Client } from "@agenturn/db";
+import { db, clients } from "@agenturn/db";
+import { eq, desc } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -11,10 +12,11 @@ export async function GET(req: NextRequest) {
 
   const tenantId = await getTenantId(session);
 
-  const clients = await Client.findAll({
-    where: { tenant_id: tenantId },
-    order: [["created_at", "DESC"]],
-  });
+  const result = await db
+    .select()
+    .from(clients)
+    .where(eq(clients.tenant_id, tenantId))
+    .orderBy(desc(clients.created_at));
 
-  return NextResponse.json(clients);
+  return NextResponse.json(result);
 }

@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { Notification } from "@agenturn/db";
+import { notifications, db } from "@agenturn/db";
+import { and, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function PATCH(
@@ -15,10 +16,10 @@ export async function PATCH(
   const tenantId = await getTenantId(session);
   const { id } = await params;
 
-  await Notification.update(
-    { read: true },
-    { where: { id: id, read: false, tenant_id: tenantId } },
-  );
+  await db
+    .update(notifications)
+    .set({ read: true })
+    .where(and(eq(notifications.id, id), eq(notifications.read, false)));
 
   return NextResponse.json({ ok: true });
 }
@@ -36,7 +37,11 @@ export async function DELETE(
   const tenantId = await getTenantId(session);
   const { id } = await params;
 
-  await Notification.destroy({ where: { id, tenant_id: tenantId } });
+  await db
+    .delete(notifications)
+    .where(
+      and(eq(notifications.id, id), eq(notifications.tenant_id, tenantId)),
+    );
 
   return NextResponse.json({ ok: true });
 }

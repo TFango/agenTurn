@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { Notification } from "@agenturn/db";
+import { notifications, db } from "@agenturn/db";
+import { and, desc, eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -11,13 +12,14 @@ export async function GET(req: NextRequest) {
 
   const tenantId = await getTenantId(session);
 
-  const notifications = await Notification.findAll({
-    where: { tenant_id: tenantId },
-    order: [["created_at", "DESC"]],
-    limit: 30,
-  });
+  const result = await db
+    .select()
+    .from(notifications)
+    .where(eq(notifications.tenant_id, tenantId))
+    .orderBy(desc(notifications.created_at))
+    .limit(30);
 
-  return NextResponse.json(notifications);
+  return NextResponse.json(result);
 }
 
 export async function PATCH(req: NextRequest) {
@@ -29,10 +31,12 @@ export async function PATCH(req: NextRequest) {
 
   const tenantId = await getTenantId(session);
 
-  await Notification.update(
-    { read: true },
-    { where: { tenant_id: tenantId, read: false } },
-  );
+  await db
+    .update(notifications)
+    .set({ read: true })
+    .where(
+      and(eq(notifications.tenant_id, tenantId), eq(notifications.read, false)),
+    );
 
   return NextResponse.json(true);
 }

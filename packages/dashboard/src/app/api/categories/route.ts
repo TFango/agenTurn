@@ -1,5 +1,6 @@
 import { getSessionOrUnauthorized, getTenantId } from "@/lib/session";
-import { ServiceCategory } from "@agenturn/db";
+import { serviceCategories, db } from "@agenturn/db";
+import { eq } from "drizzle-orm";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -11,11 +12,12 @@ export async function GET(req: NextRequest) {
 
   const tenantId = await getTenantId(session);
 
-  const categories = await ServiceCategory.findAll({
-    where: { tenant_id: tenantId },
-  });
+  const result = await db
+    .select()
+    .from(serviceCategories)
+    .where(eq(serviceCategories.tenant_id, tenantId));
 
-  return NextResponse.json(categories);
+  return NextResponse.json(result);
 }
 
 export async function POST(req: NextRequest) {
@@ -41,10 +43,13 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const categorie = await ServiceCategory.create({
-    name: name,
-    tenant_id: tenantId,
-  });
+  const [category] = await db
+    .insert(serviceCategories)
+    .values({
+      name,
+      tenant_id: tenantId,
+    })
+    .returning();
 
-  return NextResponse.json(categorie);
+  return NextResponse.json(category);
 }

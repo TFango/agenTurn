@@ -1,14 +1,13 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import { Pool } from "pg";
-
+import { db, users } from "@agenturn/db";
+import { eq } from "drizzle-orm";
 // NextAuth() recibe la config y devuelve 4 herramientas que exportamos:
 // - handlers: los endpoints GET/POST que necesita NextAuth en /api/auth
 // - auth: función para leer la sesión actual (en server components y middleware)
 // - signIn / signOut: funciones para iniciar y cerrar sesión (en client components)
 export const { handlers, auth, signIn, signOut } = NextAuth({
-
   // providers: le decís a NextAuth cómo puede autenticarse un usuario.
   // Podría ser Google, GitHub, etc. Nosotros usamos "Credentials" = email + password.
   providers: [
@@ -21,17 +20,18 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Si retornás un objeto → login exitoso
       // Si retornás null o tirás un error → login fallido
       async authorize(credentials) {
-        const pool = new Pool({ connectionString: process.env.DATABASE_URL, ssl: { rejectUnauthorized: false } });
-        const { rows } = await pool.query(
-          "SELECT * FROM users WHERE email = $1 LIMIT 1",
-          [credentials.email as string]
-        );
-        await pool.end();
+        const user = await db
+          .select()
+          .from(users)
+          .where(eq(users.email, credentials.email as string))
+          .then((r) => r[0]);
 
-        const user = rows[0];
         if (!user) throw new Error("No existe este usuario");
 
-        const valid = await bcrypt.compare(credentials.password as string, user.password_hash);
+        const valid = await bcrypt.compare(
+          credentials.password as string,
+          user.password_hash!,
+        );
         if (!valid) throw new Error("Contraseña incorrecta");
 
         return {
