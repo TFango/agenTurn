@@ -1,19 +1,21 @@
-export { sequelize } from "./connection";
+export { db } from "./db";
 
-export { Tenant } from "./models/core/Tenant";
-export { Professional } from "./models/core/Professional";
-export { Service } from "./models/core/Service";
-export { WorkingHours } from "./models/calendar/WorkingHours";
-export { Appointment } from "./models/calendar/Appointment";
-export { BlockedDate } from "./models/calendar/BlockedDate";
-export { User } from "./models/users/User";
-export { Client } from "./models/client/Client";
-export { ConversationState } from "./models/client/ConversationState";
-export { WaitList } from "./models/client/Waitlist";
-export { Notification } from "./models/core/Notification";
-export { ServiceCategory } from "./models/core/ServiceCategory";
-export { ProfessionalCategory } from "./models/core/ProfessionalCategory";
-export { PushSubscription } from "./models/core/PushSubscription";
+export {
+  tenants,
+  professionals,
+  serviceCategories,
+  professionalCategories,
+  services,
+  workingHours,
+  appointments,
+  blockedDates,
+  users,
+  clients,
+  conversationStates,
+  waitlist,
+  notifications,
+  pushSubscriptions,
+} from "./schema";
 
 export { getAvailableSlots } from "./scheduling";
 export type {
@@ -22,4 +24,16 @@ export type {
   ExistingAppointment,
 } from "./scheduling";
 
-import "./models/associations";
+export type ConversationStateEnum =
+  | "greeting"
+  | "select_service"
+  | "select_professional"
+  | "select_date"
+  | "select_time"
+  | "confirm"
+  | "confirmed"
+  | "cancel_select"
+  | "cancel_confirm"
+  | "human_handoff"
+  | "waitlist"
+  | "select_category";

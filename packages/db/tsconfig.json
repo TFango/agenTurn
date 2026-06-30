@@ -6,7 +6,8 @@
     "strict": true,
     "rootDir": "src",
     "outDir": "dist",
-    "declaration": true
+    "declaration": true,
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": ["src/seed.ts", "src/test"]
