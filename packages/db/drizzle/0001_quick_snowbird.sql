@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "conversation_states_tenant_whatsapp_idx" ON "conversation_states" USING btree ("tenant_id","client_whatsapp");

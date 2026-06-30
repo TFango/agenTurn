@@ -10,6 +10,7 @@ import {
   jsonb,
   date,
   time,
+  uniqueIndex,
 } from "drizzle-orm/pg-core";
 
 export const planEnum = pgEnum("plan", ["free", "pro"]);
@@ -138,7 +139,7 @@ export const conversationStates = pgTable("conversation_states", {
   state: varchar("state", { length: 50 }).notNull(),
   temp_data: jsonb("temp_data").$type<Record<string, unknown>>().notNull().default({}),
   updated_at: timestamp("updated_at"),
-});
+}, (t) => [uniqueIndex("conversation_states_tenant_whatsapp_idx").on(t.tenant_id, t.client_whatsapp)]);
 
 export const waitlist = pgTable("waitlist", {
   id: uuid("id").primaryKey().defaultRandom(),
