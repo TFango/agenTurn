@@ -130,7 +130,7 @@ export const clients = pgTable("clients", {
   whatsapp_number: varchar("whatsapp_number", { length: 50 }),
   notes: text("notes"),
   created_at: timestamp("created_at").defaultNow(),
-});
+}, (t) => [uniqueIndex("clients_tenant_whatsapp_idx").on(t.tenant_id, t.whatsapp_number)]);
 
 export const conversationStates = pgTable("conversation_states", {
   id: uuid("id").primaryKey().defaultRandom(),
