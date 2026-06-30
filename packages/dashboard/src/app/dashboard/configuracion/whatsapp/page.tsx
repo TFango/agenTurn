@@ -6,6 +6,7 @@ import styles from "./whatsapp.module.css";
 
 export default function WhatsAppPage() {
   const [wpp, setWpp] = useState("");
+  const [phoneNumberId, setPhoneNumberId] = useState("");
   const [slotInterval, setSlotInterval] = useState(30);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -15,6 +16,7 @@ export default function WhatsAppPage() {
       .then((r) => r.json())
       .then((data) => {
         setWpp(data.whatsapp_number ?? "");
+        setPhoneNumberId(data.phone_number_id ?? "");
         setSlotInterval(data.slot_interval_minutes ?? 30);
       });
   }, []);
@@ -27,6 +29,7 @@ export default function WhatsAppPage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         whatsapp_number: wpp,
+        phone_number_id: phoneNumberId,
         slot_interval_minutes: slotInterval,
       }),
     });
@@ -78,6 +81,23 @@ export default function WhatsAppPage() {
               value={wpp}
               onChange={(e) => {
                 setWpp(e.target.value);
+                setSaved(false);
+              }}
+            />
+          </div>
+
+          <div className={styles.fieldCard}>
+            <label className={styles.fieldLabel}>Phone Number ID</label>
+            <p className={styles.fieldHint}>
+              El ID que te da Meta para este número (lo encontrás en la configuración de tu app de Meta)
+            </p>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="123456789012345"
+              value={phoneNumberId}
+              onChange={(e) => {
+                setPhoneNumberId(e.target.value);
                 setSaved(false);
               }}
             />

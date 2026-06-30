@@ -33,10 +33,10 @@ export async function PATCH(req: NextRequest) {
   const tenantId = await getTenantId(session);
   const body = await req.json();
 
-  const { name, whatsapp_number, slot_interval_minutes } = body;
+  const { name, whatsapp_number, phone_number_id, slot_interval_minutes } = body;
 
   await Tenant.update(
-    { name, whatsapp_number, slot_interval_minutes },
+    { name, whatsapp_number, phone_number_id, slot_interval_minutes },
     { where: { id: tenantId } },
   );
 
