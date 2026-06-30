@@ -52,6 +52,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // En requests siguientes, "user" es undefined y simplemente devolvemos el token tal cual.
     jwt({ token, user }) {
       if (user) {
+        token.id = user.id;
         token.tenantId = (user as any).tenantId;
         token.role = (user as any).role;
         token.professionalId = (user as any).professionalId;
@@ -63,6 +64,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // Toma los datos del token (cookie) y los expone en el objeto session.
     // Así podés leer session.user.role en cualquier parte de la app.
     session({ session, token }) {
+      (session.user as any).id = token.id;
       (session.user as any).tenantId = token.tenantId;
       (session.user as any).role = token.role;
       (session.user as any).professionalId = token.professionalId;
