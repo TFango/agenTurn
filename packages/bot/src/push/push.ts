@@ -1,4 +1,5 @@
-import { PushSubscription } from "@agenturn/db";
+import { db, pushSubscriptions } from "@agenturn/db";
+import { eq } from "drizzle-orm";
 import webpush from "web-push";
 
 webpush.setVapidDetails(
@@ -12,24 +13,23 @@ export async function sendPushToTenant(
   title: string,
   body: string,
 ) {
-  const push = await PushSubscription.findAll({
-    where: { tenant_id: tenantId },
-  });
+  const push = await db
+    .select()
+    .from(pushSubscriptions)
+    .where(eq(pushSubscriptions.tenant_id, tenantId));
 
-  if (push.length === 0) {
-    return;
-  }
+  if (push.length === 0) return;
 
   await Promise.all(
     push.map(async (p) => {
       try {
         await webpush.sendNotification(
-          { endpoint: p.endpoint, keys: p.keys },
+          { endpoint: p.endpoint!, keys: p.keys },
           JSON.stringify({ title, body }),
         );
       } catch (err: any) {
         if (err.statusCode === 410) {
-          await p.destroy();
+          await db.delete(pushSubscriptions).where(eq(pushSubscriptions.id, p.id));
         }
         console.error(`[Push] Error enviado a ${p.endpoint}: `, err.message);
       }

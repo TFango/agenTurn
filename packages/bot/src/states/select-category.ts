@@ -1,42 +1,33 @@
-import {
-  ConversationState,
-  Tenant,
-  Client,
-  ServiceCategory,
-} from "@agenturn/db";
+import { conversationStates, db, serviceCategories } from "@agenturn/db";
+import type { Client, ConversationState, Tenant } from "@agenturn/db";
+import { eq } from "drizzle-orm";
 import { sendListMessage } from "../whatsapp/whatsapp";
 
-type ConversationI = InstanceType<typeof ConversationState>;
-type TenantI = InstanceType<typeof Tenant>;
-type ClientI = InstanceType<typeof Client>;
-
 export async function handleSelectCategory(
-  conv: ConversationI,
-  tenant: TenantI,
-  client: ClientI,
+  conv: ConversationState,
+  tenant: Tenant,
+  client: Client,
   body: string,
 ) {
-  const categories = await ServiceCategory.findAll({
-    where: { tenant_id: tenant.id },
-  });
+  const categories = await db
+    .select()
+    .from(serviceCategories)
+    .where(eq(serviceCategories.tenant_id, tenant.id));
 
   if (categories.length === 0) {
-    await conv.update({ state: "select_service" });
+    await db.update(conversationStates).set({ state: "select_service" }).where(eq(conversationStates.id, conv.id));
+    conv.state = "select_service";
     const { handleSelectService } = await import("./select-service");
     return handleSelectService(conv, tenant, client, body);
   }
 
-  const selected = categories.find((s) => s.id === body);
+  const selected = categories.find((c) => c.id === body);
 
   if (selected) {
-    await conv.update({
-      state: "select_service",
-      temp_data: {
-        ...conv.temp_data,
-        category_id: selected.id,
-      },
-    });
-
+    const newTempData = { ...conv.temp_data as object, category_id: selected.id };
+    await db.update(conversationStates).set({ state: "select_service", temp_data: newTempData }).where(eq(conversationStates.id, conv.id));
+    conv.state = "select_service";
+    conv.temp_data = newTempData;
     const { handleSelectService } = await import("./select-service");
     return handleSelectService(conv, tenant, client, body);
   }
@@ -47,10 +38,7 @@ export async function handleSelectCategory(
     "¿Qué tipo de servicio estás buscando?",
     "Ver opciones",
     [
-      ...categories.slice(0, 9).map((c) => ({
-        id: c.id,
-        title: c.name,
-      })),
+      ...categories.slice(0, 9).map((c) => ({ id: c.id, title: c.name ?? "" })),
       { id: "back_to_menu", title: "← Volver al menú" },
     ],
   );

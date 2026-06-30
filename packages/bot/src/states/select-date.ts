@@ -1,20 +1,8 @@
-import {
-  ConversationState,
-  Tenant,
-  Client,
-  WorkingHours,
-  Appointment,
-  BlockedDate,
-  Service,
-  getAvailableSlots,
-} from "@agenturn/db";
+import { appointments, blockedDates, conversationStates, db, getAvailableSlots, services, workingHours } from "@agenturn/db";
+import type { Client, ConversationState, Tenant } from "@agenturn/db";
+import { and, between, eq } from "drizzle-orm";
+import { getHoursAR, getMinutesAR, nowAR, todayAR } from "../utils/date";
 import { sendListMessage, sendTextMessage } from "../whatsapp/whatsapp";
-import { Op } from "sequelize";
-import { todayAR, nowAR, getHoursAR, getMinutesAR } from "../utils/date";
-
-type ConversationI = InstanceType<typeof ConversationState>;
-type TenantI = InstanceType<typeof Tenant>;
-type ClientI = InstanceType<typeof Client>;
 
 function formatDateAR(dateStr: string): string {
   const days = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -24,9 +12,9 @@ function formatDateAR(dateStr: string): string {
 }
 
 export async function handleSelectDate(
-  conv: ConversationI,
-  tenant: TenantI,
-  client: ClientI,
+  conv: ConversationState,
+  tenant: Tenant,
+  client: Client,
   body: string,
 ) {
   const { professional_id, service_duration } = conv.temp_data as {
@@ -34,20 +22,14 @@ export async function handleSelectDate(
     service_duration: number;
   };
 
-  // Si el cliente ya eligió una fecha (formato YYYY-MM-DD)
   if (body && body.match(/^\d{4}-\d{2}-\d{2}$/)) {
-    const slots = await getSlotsForDate(
-      professional_id,
-      body,
-      service_duration,
-      tenant.slot_interval_minutes,
-    );
+    const slots = await getSlotsForDate(professional_id, body, service_duration, tenant.slot_interval_minutes);
 
     if (slots.length > 0) {
-      await conv.update({
-        state: "select_time",
-        temp_data: { ...conv.temp_data, selected_date: body },
-      });
+      const newTempData = { ...conv.temp_data as object, selected_date: body };
+      await db.update(conversationStates).set({ state: "select_time", temp_data: newTempData }).where(eq(conversationStates.id, conv.id));
+      conv.state = "select_time";
+      conv.temp_data = newTempData;
       const { handleSelectTime } = await import("./select-time");
       return handleSelectTime(conv, tenant, client, body);
     }
@@ -59,15 +41,11 @@ export async function handleSelectDate(
     );
   }
 
-  // Generar próximos 14 días con disponibilidad
-  const availableDays = await getAvailableDays(
-    professional_id,
-    service_duration,
-    tenant.slot_interval_minutes,
-  );
+  const availableDays = await getAvailableDays(professional_id, service_duration, tenant.slot_interval_minutes);
 
   if (availableDays.length === 0) {
-    await conv.update({ state: "waitlist", temp_data: conv.temp_data });
+    await db.update(conversationStates).set({ state: "waitlist", temp_data: conv.temp_data }).where(eq(conversationStates.id, conv.id));
+    conv.state = "waitlist";
     const { handleWaitlist } = await import("./waitlist");
     return handleWaitlist(conv, tenant, client, body);
   }
@@ -84,7 +62,6 @@ export async function handleSelectDate(
   );
 }
 
-// Obtiene los slots disponibles para una fecha específica
 export async function getSlotsForDate(
   professionalId: string,
   date: string,
@@ -93,42 +70,47 @@ export async function getSlotsForDate(
 ) {
   const dayOfWeek = new Date(`${date}T12:00:00`).getDay();
 
-  // ¿Trabaja ese día?
-  const wh = await WorkingHours.findOne({
-    where: { professional_id: professionalId, day_of_week: dayOfWeek },
-  });
+  const wh = await db
+    .select()
+    .from(workingHours)
+    .where(and(eq(workingHours.professional_id, professionalId), eq(workingHours.day_of_week, dayOfWeek)))
+    .then((r) => r[0]);
   if (!wh) return [];
 
-  // ¿Está bloqueado?
-  const blocked = await BlockedDate.findOne({
-    where: { professional_id: professionalId, date },
-  });
+  const blocked = await db
+    .select({ id: blockedDates.id })
+    .from(blockedDates)
+    .where(and(eq(blockedDates.professional_id, professionalId), eq(blockedDates.date, date)))
+    .then((r) => r[0]);
   if (blocked) return [];
 
-  // Buscar turnos confirmados de ese día
   const dateStart = new Date(`${date}T00:00:00`);
   const dateEnd = new Date(`${date}T23:59:59`);
-  const appointments = await Appointment.findAll({
-    where: {
-      professional_id: professionalId,
-      status: "confirmed",
-      datetime: { [Op.gte]: dateStart, [Op.lte]: dateEnd },
-    },
-    include: [{ model: Service, as: "service" }],
-  });
 
-  const dayAppointments = appointments.map((a) => {
+  const dayAppointments = await db
+    .select({ datetime: appointments.datetime, duration_minutes: services.duration_minutes })
+    .from(appointments)
+    .leftJoin(services, eq(appointments.service_id, services.id))
+    .where(
+      and(
+        eq(appointments.professional_id, professionalId),
+        eq(appointments.status, "confirmed"),
+        between(appointments.datetime, dateStart, dateEnd),
+      ),
+    );
+
+  const existingAppointments = dayAppointments.map((a) => {
     const dt = new Date(a.datetime);
     return {
       startHour: getHoursAR(dt),
       startMinute: getMinutesAR(dt),
-      duration_minutes: (a as any).service.duration_minutes,
+      duration_minutes: a.duration_minutes ?? serviceDuration,
     };
   });
 
   const slots = getAvailableSlots(
-    { start_time: wh.start_time, end_time: wh.end_time },
-    dayAppointments,
+    { start_time: wh.start_time!, end_time: wh.end_time! },
+    existingAppointments,
     serviceDuration,
     slotInterval,
   );
@@ -145,7 +127,6 @@ export async function getSlotsForDate(
   return slots;
 }
 
-// Busca los próximos 14 días que tengan al menos un slot disponible
 async function getAvailableDays(
   professionalId: string,
   serviceDuration: number,
@@ -158,12 +139,7 @@ async function getAvailableDays(
   for (let i = 1; i <= 14; i++) {
     const d = new Date(y, m - 1, d2 + i);
     const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    const slots = await getSlotsForDate(
-      professionalId,
-      dateStr,
-      serviceDuration,
-      slotInterval,
-    );
+    const slots = await getSlotsForDate(professionalId, dateStr, serviceDuration, slotInterval);
     if (slots.length > 0) available.push(dateStr);
   }
 

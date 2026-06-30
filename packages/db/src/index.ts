@@ -18,6 +18,12 @@ export {
 } from "./schema";
 
 export { getAvailableSlots } from "./scheduling";
+
+import type { InferSelectModel } from "drizzle-orm";
+import { tenants, clients, conversationStates } from "./schema";
+export type Tenant = InferSelectModel<typeof tenants>;
+export type Client = InferSelectModel<typeof clients>;
+export type ConversationState = InferSelectModel<typeof conversationStates>;
 export type {
   WorkingHoursRange,
   TimeSlot,

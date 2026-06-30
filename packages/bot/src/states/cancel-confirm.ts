@@ -1,32 +1,24 @@
-import {
-  ConversationState,
-  Tenant,
-  Client,
-  Appointment,
-  Notification,
-} from "@agenturn/db";
-import { sendButtonMessage, sendTextMessage } from "../whatsapp/whatsapp";
+import { appointments, conversationStates, db, notifications } from "@agenturn/db";
+import type { Client, ConversationState, Tenant } from "@agenturn/db";
+import { and, eq } from "drizzle-orm";
 import { sendPushToTenant } from "../push/push";
-
-type ConversationI = InstanceType<typeof ConversationState>;
-type TenantI = InstanceType<typeof Tenant>;
-type ClientI = InstanceType<typeof Client>;
+import { sendButtonMessage, sendTextMessage } from "../whatsapp/whatsapp";
 
 export async function handleCancelConfirm(
-  conv: ConversationI,
-  tenant: TenantI,
-  client: ClientI,
+  conv: ConversationState,
+  tenant: Tenant,
+  client: Client,
   body: string,
 ) {
   const { appointment_id } = conv.temp_data as { appointment_id: string };
 
   if (body === "yes") {
-    await Appointment.update(
-      { status: "cancelled" },
-      { where: { id: appointment_id, client_id: client.id } },
-    );
+    await db
+      .update(appointments)
+      .set({ status: "cancelled" })
+      .where(and(eq(appointments.id, appointment_id), eq(appointments.client_id, client.id)));
 
-    await Notification.create({
+    await db.insert(notifications).values({
       type: "cancelled_appointment",
       title: "Turno cancelado",
       body: `${client.name} cancelo su turno`,
@@ -35,23 +27,25 @@ export async function handleCancelConfirm(
 
     await sendPushToTenant(tenant.id, "Turno cancelado", `${client.name} canceló su turno`);
 
-    await conv.update({ state: "greeting" });
+    await db.update(conversationStates).set({ state: "greeting" }).where(eq(conversationStates.id, conv.id));
+    conv.state = "greeting";
 
     await sendTextMessage(
       tenant.phone_number_id,
       conv.client_whatsapp,
       "✅ Turno cancelado. ¡Hasta la próxima!",
     );
-
     return;
-  } else if (body === "no") {
-    await conv.update({ state: "greeting" });
+  }
+
+  if (body === "no") {
+    await db.update(conversationStates).set({ state: "greeting" }).where(eq(conversationStates.id, conv.id));
+    conv.state = "greeting";
     await sendTextMessage(
       tenant.phone_number_id,
       conv.client_whatsapp,
       "Perfecto, el turno sigue en pie. 👍",
     );
-
     return;
   }
 

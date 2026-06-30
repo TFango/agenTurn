@@ -1,4 +1,6 @@
-import { Client, ConversationState, Tenant } from "@agenturn/db";
+import { conversationStates, db } from "@agenturn/db";
+import type { Client, ConversationState, Tenant } from "@agenturn/db";
+import { eq } from "drizzle-orm";
 import { handleGreeting } from "./states/greeting";
 import { handleSelectCategory } from "./states/select-category";
 import { handleSelectService } from "./states/select-service";
@@ -12,17 +14,16 @@ import { handleCancelConfirm } from "./states/cancel-confirm";
 import { handleHumanHandoff } from "./states/human-handoff";
 import { handleWaitlist } from "./states/waitlist";
 
-type ConvState = InstanceType<typeof ConversationState>;
-type TenantI = InstanceType<typeof Tenant>;
-type ClientI = InstanceType<typeof Client>;
-
 export async function dispatchState(
-  conv: ConvState,
-  tenant: TenantI,
-  client: ClientI,
+  conv: ConversationState,
+  tenant: Tenant,
+  client: Client,
   body: string,
 ): Promise<void> {
-  await conv.update({ updated_at: new Date() });
+  await db
+    .update(conversationStates)
+    .set({ updated_at: new Date() })
+    .where(eq(conversationStates.id, conv.id));
 
   switch (conv.state) {
     case "greeting":            return handleGreeting(conv, tenant, client, body);
@@ -38,7 +39,11 @@ export async function dispatchState(
     case "human_handoff":       return handleHumanHandoff(conv, tenant, client, body);
     case "waitlist":            return handleWaitlist(conv, tenant, client, body);
     default:
-      await conv.update({ state: "greeting", temp_data: {} });
+      await db
+        .update(conversationStates)
+        .set({ state: "greeting", temp_data: {} })
+        .where(eq(conversationStates.id, conv.id));
+      conv.state = "greeting";
       return handleGreeting(conv, tenant, client, body);
   }
 }

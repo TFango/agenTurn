@@ -16,7 +16,7 @@ describe('sendTextMessage', () => {
   it('calls Meta API with correct payload', async () => {
     await sendTextMessage('phone_id_1', '5491112345678', 'Hola!');
     expect(mockedAxios.post).toHaveBeenCalledWith(
-      'https://graph.facebook.com/v18.0/phone_id_1/messages',
+      'https://graph.facebook.com/v21.0/phone_id_1/messages',
       expect.objectContaining({ to: '5491112345678', type: 'text' }),
       expect.any(Object),
     );

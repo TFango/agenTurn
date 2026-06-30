@@ -1,37 +1,37 @@
-import { Client, ConversationState, Service, Tenant } from "@agenturn/db";
+import { conversationStates, db, services } from "@agenturn/db";
+import type { Client, ConversationState, Tenant } from "@agenturn/db";
+import { and, eq } from "drizzle-orm";
 import { sendListMessage } from "../whatsapp/whatsapp";
 
-type ConversationI = InstanceType<typeof ConversationState>;
-type TenantI = InstanceType<typeof Tenant>;
-type ClientI = InstanceType<typeof Client>;
-
 export async function handleSelectService(
-  conv: ConversationI,
-  tenant: TenantI,
-  client: ClientI,
+  conv: ConversationState,
+  tenant: Tenant,
+  client: Client,
   body: string,
 ) {
   const { category_id } = conv.temp_data as { category_id?: string };
 
-  const where: any = { tenant_id: tenant.id, active: true };
-  if (category_id) where.category_id = category_id;
+  const conditions = [eq(services.tenant_id, tenant.id), eq(services.active, true)];
+  if (category_id) conditions.push(eq(services.category_id, category_id));
 
-  const services = await Service.findAll({ where });
+  const serviceList = await db
+    .select()
+    .from(services)
+    .where(and(...conditions));
 
-  const selected = services.find((s) => s.id === body);
+  const selected = serviceList.find((s) => s.id === body);
 
   if (selected) {
-    await conv.update({
-      state: "select_professional",
-      temp_data: {
-        ...conv.temp_data,
-        service_id: selected.id,
-        service_name: selected.name,
-        service_duration: selected.duration_minutes,
-      },
-    });
-
-    const { handleSelectProfessional } = await import("./select-professional")
+    const newTempData = {
+      ...conv.temp_data as object,
+      service_id: selected.id,
+      service_name: selected.name,
+      service_duration: selected.duration_minutes,
+    };
+    await db.update(conversationStates).set({ state: "select_professional", temp_data: newTempData }).where(eq(conversationStates.id, conv.id));
+    conv.state = "select_professional";
+    conv.temp_data = newTempData;
+    const { handleSelectProfessional } = await import("./select-professional");
     return handleSelectProfessional(conv, tenant, client, body);
   }
 
@@ -41,9 +41,9 @@ export async function handleSelectService(
     "¿Qué servicio querés reservar?",
     "Ver servicios",
     [
-      ...services.slice(0, 9).map((s) => ({
+      ...serviceList.slice(0, 9).map((s) => ({
         id: s.id,
-        title: s.name,
+        title: s.name ?? "",
         description: `${s.duration_minutes} min - $${s.price}`,
       })),
       { id: "back_to_menu", title: "← Volver al menú" },

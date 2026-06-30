@@ -1,32 +1,18 @@
-import {
-  ConversationState,
-  Tenant,
-  Client,
-  Appointment,
-  Notification,
-} from "@agenturn/db";
+import { appointments, conversationStates, db, notifications } from "@agenturn/db";
+import type { Client, ConversationState, Tenant } from "@agenturn/db";
+import { eq } from "drizzle-orm";
+import { sendPushToTenant } from "../push/push";
 import { sendTextMessage } from "../whatsapp/whatsapp";
 import { getSlotsForDate } from "./select-date";
-import { sendPushToTenant } from "../push/push";
-
-type ConversationI = InstanceType<typeof ConversationState>;
-type TenantI = InstanceType<typeof Tenant>;
-type ClientI = InstanceType<typeof Client>;
 
 export async function handleConfirmed(
-  conv: ConversationI,
-  tenant: TenantI,
-  client: ClientI,
+  conv: ConversationState,
+  tenant: Tenant,
+  client: Client,
   body: string,
 ): Promise<void> {
-  const {
-    professional_id,
-    service_id,
-    selected_date,
-    selected_time,
-    service_name,
-    service_duration,
-  } = conv.temp_data as Record<string, string>;
+  const { professional_id, service_id, selected_date, selected_time, service_name, service_duration } =
+    conv.temp_data as Record<string, string>;
 
   const slots = await getSlotsForDate(
     professional_id,
@@ -43,12 +29,15 @@ export async function handleConfirmed(
       conv.client_whatsapp,
       "😕 Ese horario se acaba de ocupar. Te muestro los que quedan:",
     );
-    await conv.update({ state: "select_time", temp_data: { ...conv.temp_data, selected_time: undefined } });
+    const newTempData = { ...conv.temp_data as object, selected_time: undefined };
+    await db.update(conversationStates).set({ state: "select_time", temp_data: newTempData }).where(eq(conversationStates.id, conv.id));
+    conv.state = "select_time";
+    conv.temp_data = newTempData;
     const { handleSelectTime } = await import("./select-time");
     return handleSelectTime(conv, tenant, client, "");
   }
 
-  await Appointment.create({
+  await db.insert(appointments).values({
     tenant_id: tenant.id,
     professional_id,
     service_id,
@@ -57,7 +46,7 @@ export async function handleConfirmed(
     status: "confirmed",
   });
 
-  await Notification.create({
+  await db.insert(notifications).values({
     tenant_id: tenant.id,
     type: "new_appointment",
     title: "Nuevo turno",
@@ -72,8 +61,7 @@ export async function handleConfirmed(
     `✅ *¡Turno confirmado!*\n\nTe esperamos el ${selected_date} a las ${selected_time} hs.\n\nSi necesitás cancelar, escribí "cancelar turno".`,
   );
 
-  await conv.update({
-    state: "greeting",
-    temp_data: {},
-  });
+  await db.update(conversationStates).set({ state: "greeting", temp_data: {} }).where(eq(conversationStates.id, conv.id));
+  conv.state = "greeting";
+  conv.temp_data = {};
 }
