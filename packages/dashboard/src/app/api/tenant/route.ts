@@ -38,12 +38,12 @@ export async function PATCH(req: NextRequest) {
   const tenantId = await getTenantId(session);
   const body = await req.json();
 
-  const { name, whatsapp_number, phone_number_id, slot_interval_minutes } =
+  const { name, whatsapp_number, phone_number_id, meta_access_token, slot_interval_minutes } =
     body;
 
   await db
     .update(tenants)
-    .set({ name, whatsapp_number, phone_number_id, slot_interval_minutes })
+    .set({ name, whatsapp_number, phone_number_id, meta_access_token, slot_interval_minutes })
     .where(eq(tenants.id, tenantId));
 
   return NextResponse.json({ ok: true });
