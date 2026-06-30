@@ -7,7 +7,8 @@ import styles from "./whatsapp.module.css";
 export default function WhatsAppPage() {
   const [wpp, setWpp] = useState("");
   const [phoneNumberId, setPhoneNumberId] = useState("");
-  const [slotInterval, setSlotInterval] = useState(30);
+  const [slotInterval, setSlotInterval] = useState<number | "">("");
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -17,7 +18,8 @@ export default function WhatsAppPage() {
       .then((data) => {
         setWpp(data.whatsapp_number ?? "");
         setPhoneNumberId(data.phone_number_id ?? "");
-        setSlotInterval(data.slot_interval_minutes ?? 30);
+        setSlotInterval(data.slot_interval_minutes ?? "");
+        setLoading(false);
       });
   }, []);
 
@@ -124,7 +126,7 @@ export default function WhatsAppPage() {
           <button
             type="submit"
             className={`${styles.saveBtn} ${saved ? styles.saveBtnDone : ""}`}
-            disabled={saving}
+            disabled={saving || loading}
           >
             {saving ? "Guardando…" : saved ? "¡Guardado!" : "Guardar cambios"}
           </button>
