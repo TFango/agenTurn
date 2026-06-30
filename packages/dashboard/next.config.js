@@ -15,6 +15,11 @@ const nextConfig = {
     "@agenturn/db",
     "pg-protocol",
     "bcryptjs",
+    "pg-connection-string",
+    "tedious",
+    "mysql2",
+    "oracledb",
+    "sqlite3",
   ],
 };
 
