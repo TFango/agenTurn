@@ -1,0 +1,1 @@
+ALTER TABLE "tenants" ADD COLUMN "meta_access_token" varchar(512);

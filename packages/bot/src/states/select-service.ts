@@ -37,6 +37,7 @@ export async function handleSelectService(
 
   await sendListMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     "¿Qué servicio querés reservar?",
     "Ver servicios",

@@ -31,6 +31,7 @@ export async function handleSelectTime(
 
   await sendListMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     `¿A qué hora? (${selected_date})`,
     "Ver horarios",

@@ -30,6 +30,7 @@ export async function handleGreeting(
 
   await sendButtonMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     `¡Hola! 👋 Soy el asistente de *${tenant.name}*. ¿Qué querés hacer?`,
     [

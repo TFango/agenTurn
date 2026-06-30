@@ -36,6 +36,7 @@ export async function handleSelectDate(
 
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "Ese día no tengo lugar disponible. Acá te muestro los días que sí tienen:",
     );
@@ -52,6 +53,7 @@ export async function handleSelectDate(
 
   await sendListMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     "¿Qué día preferís?",
     "Ver días",

@@ -17,6 +17,7 @@ export async function handleWaitlist(
     conv.state = "greeting";
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "✅ Te anotamos en la lista de espera. Te avisamos cuando haya un lugar disponible.",
     );
@@ -26,6 +27,7 @@ export async function handleWaitlist(
   if (body === "waitlist_no") {
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "Entendido. Escribinos cuando quieras para consultar disponibilidad. 👋",
     );
@@ -36,6 +38,7 @@ export async function handleWaitlist(
 
   await sendButtonMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     "Por el momento no hay turnos disponibles en los próximos 14 días. ¿Querés que te avisemos cuando haya lugar?",
     [

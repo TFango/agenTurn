@@ -25,6 +25,7 @@ export async function handleSelectProfessional(
   if (profList.length === 0) {
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "No hay profesionales disponibles en este momento. Volvé a intentar más tarde.\n\nEscribí *turno* para volver al menú.",
     );
@@ -48,6 +49,7 @@ export async function handleSelectProfessional(
 
   await sendListMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     "¿Con quién querés atenderte?",
     "Ver profesionales",

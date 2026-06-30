@@ -7,6 +7,7 @@ import styles from "./whatsapp.module.css";
 export default function WhatsAppPage() {
   const [wpp, setWpp] = useState("");
   const [phoneNumberId, setPhoneNumberId] = useState("");
+  const [metaAccessToken, setMetaAccessToken] = useState("");
   const [slotInterval, setSlotInterval] = useState<number | "">("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -18,6 +19,7 @@ export default function WhatsAppPage() {
       .then((data) => {
         setWpp(data.whatsapp_number ?? "");
         setPhoneNumberId(data.phone_number_id ?? "");
+        setMetaAccessToken(data.meta_access_token ?? "");
         setSlotInterval(data.slot_interval_minutes ?? "");
         setLoading(false);
       });
@@ -32,6 +34,7 @@ export default function WhatsAppPage() {
       body: JSON.stringify({
         whatsapp_number: wpp,
         phone_number_id: phoneNumberId,
+        meta_access_token: metaAccessToken,
         slot_interval_minutes: slotInterval,
       }),
     });
@@ -100,6 +103,23 @@ export default function WhatsAppPage() {
               value={phoneNumberId}
               onChange={(e) => {
                 setPhoneNumberId(e.target.value);
+                setSaved(false);
+              }}
+            />
+          </div>
+
+          <div className={styles.fieldCard}>
+            <label className={styles.fieldLabel}>Access Token de Meta</label>
+            <p className={styles.fieldHint}>
+              El token que te da Meta para autenticar el envío de mensajes
+            </p>
+            <input
+              type="text"
+              className={styles.input}
+              placeholder="EAAxxxxxxx..."
+              value={metaAccessToken}
+              onChange={(e) => {
+                setMetaAccessToken(e.target.value);
                 setSaved(false);
               }}
             />

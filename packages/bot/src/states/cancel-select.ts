@@ -31,6 +31,7 @@ export async function handleCancelSelect(
   if (turns.length === 0) {
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "No tenés turnos próximos para cancelar.",
     );
@@ -52,6 +53,7 @@ export async function handleCancelSelect(
 
   await sendListMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     "¿Cuál turno querés cancelar?",
     "Ver turnos",

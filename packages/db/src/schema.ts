@@ -50,6 +50,7 @@ export const tenants = pgTable("tenants", {
   name: varchar("name", { length: 255 }).notNull(),
   whatsapp_number: varchar("whatsapp_number", { length: 50 }).notNull(),
   phone_number_id: varchar("phone_number_id", { length: 50 }).notNull(),
+  meta_access_token: varchar("meta_access_token", { length: 512 }),
   plan: planEnum("plan").notNull(),
   subscription_status: subscriptionStatusEnum("subscription_status").notNull(),
   slot_interval_minutes: integer("slot_interval_minutes").notNull().default(30),

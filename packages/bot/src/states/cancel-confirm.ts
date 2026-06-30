@@ -32,6 +32,7 @@ export async function handleCancelConfirm(
 
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "✅ Turno cancelado. ¡Hasta la próxima!",
     );
@@ -43,6 +44,7 @@ export async function handleCancelConfirm(
     conv.state = "greeting";
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "Perfecto, el turno sigue en pie. 👍",
     );
@@ -51,6 +53,7 @@ export async function handleCancelConfirm(
 
   await sendButtonMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     "¿Confirmás la cancelación del turno?",
     [

@@ -2,19 +2,19 @@ import axios from "axios";
 
 const BASE_URL = "https://graph.facebook.com/v21.0";
 
-function getHeaders() {
+function getHeaders(accessToken: string) {
   return {
-    Authorization: `Bearer ${process.env.META_ACCESS_TOKEN}`,
+    Authorization: `Bearer ${accessToken}`,
     "Content-Type": "application/json",
   };
 }
 
-async function send(phoneNumberId: string, to: string, payload: object) {
+async function send(phoneNumberId: string, accessToken: string, to: string, payload: object) {
   try {
     await axios.post(
       `${BASE_URL}/${phoneNumberId}/messages`,
       { messaging_product: "whatsapp", to, ...payload },
-      { headers: getHeaders() },
+      { headers: getHeaders(accessToken) },
     );
   } catch (err: any) {
     console.error(`[WhatsApp] Error enviando a ${to}:`, err.response?.data ?? err.message);
@@ -23,10 +23,11 @@ async function send(phoneNumberId: string, to: string, payload: object) {
 
 export async function sendTextMessage(
   phoneNumberId: string,
+  accessToken: string,
   to: string,
   text: string,
 ) {
-  await send(phoneNumberId, to, {
+  await send(phoneNumberId, accessToken, to, {
     type: "text",
     text: { body: text },
   });
@@ -34,11 +35,12 @@ export async function sendTextMessage(
 
 export async function sendButtonMessage(
   phoneNumberId: string,
+  accessToken: string,
   to: string,
   bodyText: string,
   buttons: Array<{ id: string; title: string }>,
 ) {
-  await send(phoneNumberId, to, {
+  await send(phoneNumberId, accessToken, to, {
     type: "interactive",
     interactive: {
       type: "button",
@@ -55,12 +57,13 @@ export async function sendButtonMessage(
 
 export async function sendListMessage(
   phoneNumberId: string,
+  accessToken: string,
   to: string,
   bodyText: string,
   buttonLabel: string,
   rows: Array<{ id: string; title: string; description?: string }>,
 ) {
-  await send(phoneNumberId, to, {
+  await send(phoneNumberId, accessToken, to, {
     type: "interactive",
     interactive: {
       type: "list",

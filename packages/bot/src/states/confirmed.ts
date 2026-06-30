@@ -26,6 +26,7 @@ export async function handleConfirmed(
   if (!stillAvailable) {
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       "😕 Ese horario se acaba de ocupar. Te muestro los que quedan:",
     );
@@ -57,6 +58,7 @@ export async function handleConfirmed(
 
   await sendTextMessage(
     tenant.phone_number_id,
+    tenant.meta_access_token!,
     conv.client_whatsapp,
     `✅ *¡Turno confirmado!*\n\nTe esperamos el ${selected_date} a las ${selected_time} hs.\n\nSi necesitás cancelar, escribí "cancelar turno".`,
   );

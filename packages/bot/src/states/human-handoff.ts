@@ -30,6 +30,7 @@ export async function handleHumanHandoff(
 
     await sendTextMessage(
       tenant.phone_number_id,
+      tenant.meta_access_token!,
       conv.client_whatsapp,
       `Un momento, le avisamos a *${tenant.name}* que querés hablar. Te responderán a la brevedad.\n\nCuando quieras sacar un turno, escribí "quiero turno".`,
     );
