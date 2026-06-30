@@ -1,4 +1,3 @@
-import { User } from "@agenturn/db";
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
@@ -21,6 +20,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       // Si retornás un objeto → login exitoso
       // Si retornás null o tirás un error → login fallido
       async authorize(credentials) {
+        const { User } = await import("@agenturn/db");
 
         // Buscamos en la DB un usuario con ese email
         const user = await User.findOne({
