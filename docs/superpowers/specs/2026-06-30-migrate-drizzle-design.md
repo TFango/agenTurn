@@ -1,5 +1,17 @@
 # Migración de Sequelize a Drizzle ORM
 
+## Modo de trabajo durante la implementación
+
+Esta migración es también una oportunidad de aprendizaje. Durante toda la implementación:
+
+- Antes de cada tarea, dar un pantallazo con los conceptos clave de Drizzle que se van a usar
+- No dar el código completo salvo que se pida explícitamente
+- Explicar cada patrón nuevo de Drizzle: qué hace, por qué se escribe así, cómo se compara con el equivalente en Sequelize
+- Cuando haya un error, explicar qué está mal y por qué antes de corregirlo
+- Guiar con fragmentos parciales y preguntas en vez de soluciones completas
+
+---
+
 ## Problema raíz
 
 El dashboard (Next.js 16 en Vercel) usa `@agenturn/db` que internamente usa Sequelize. Sequelize llama `require('pg')` dinámicamente al cargar el módulo. Turbopack (bundler por defecto en Next.js 16) bundlea esto y no puede resolver `pg` en el contexto serverless de Vercel, causando:
