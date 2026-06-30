@@ -1,3 +1,4 @@
+import "./instrument";
 import app from "./server/server";
 import { startTTLCleanup } from "./ttl-cleanup";
 
